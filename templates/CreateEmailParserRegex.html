@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Email Parser Regex</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        .form-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .form-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .form-floating {
+            margin-bottom: 1.25rem;
+        }
+        
+        .submit-btn {
+            padding: 0.8rem 2rem;
+            font-weight: 500;
+        }
+        
+        .required-field::after {
+            content: "*";
+            color: #dc3545;
+            margin-left: 4px;
+        }
+
+        /* Textarea styles for large inputs */
+        .large-input {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        /* Small helper text style */
+        .helper-text {
+            font-size: 0.75rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <h3 class="mb-0">Create Email Parser Regex</h3>
+            </div>
+
+            <form id="createEmailParserRegexForm" novalidate>
+                <div class="row g-3">
+                    <!-- ID Field -->
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="regexId" placeholder="ID" required>
+                            <label for="regexId" class="required-field">ID</label>
+                            <div class="invalid-feedback">
+                                Please enter a valid ID.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email Parser ID Field -->
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="emailParserId" placeholder="Email Parser ID" required>
+                            <label for="emailParserId" class="required-field">Email Parser ID</label>
+                            <div class="invalid-feedback">
+                                Please enter a valid email parser ID.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Regex Field -->
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <textarea class="form-control large-input" id="regex" placeholder="Regex" required></textarea>
+                            <label for="regex" class="required-field">Regex</label>
+                            <div class="invalid-feedback">
+                                Please enter a valid regex pattern.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sample Data Field -->
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <textarea class="form-control large-input" id="sampleData" placeholder="Sample Data" required></textarea>
+                            <label for="sampleData" class="required-field">Sample Data</label>
+                            <div class="invalid-feedback">
+                                Please enter sample data.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sample Output Field -->
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="sampleOutput" placeholder="Sample Output" required>
+                            <label for="sampleOutput" class="required-field">Sample Output</label>
+                            <div class="invalid-feedback">
+                                Please enter sample output.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email Column Mapped Field -->
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="emailColumnMapped" placeholder="Email Column Mapped" required>
+                            <label for="emailColumnMapped" class="required-field">Email Column Mapped</label>
+                            <div class="invalid-feedback">
+                                Please enter the email column mapped.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Field -->
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="regexStatus" placeholder="Status" required pattern="[01]">
+                            <label for="regexStatus" class="required-field">Status</label>
+                            <div class="invalid-feedback">
+                                Please enter 0 or 1 for status.
+                            </div>
+                            <div class="helper-text">Enter 1 for active, 0 for inactive</div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-primary submit-btn w-100">
+                            Create Parser Regex
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Form Validation
+        (() => {
+            'use strict';
+
+            const form = document.getElementById('createEmailParserRegexForm');
+            
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                } else {
+                    // Handle form submission
+                    event.preventDefault();
+                    const formData = new FormData(form);
+                    console.log('Form submitted:', Object.fromEntries(formData));
+                }
+
+                form.classList.add('was-validated');
+            });
+        })();
+    </script>
+</body>
+</html>

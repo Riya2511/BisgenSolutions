@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Accounts</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .update-btn {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.875rem;
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .update-btn:hover {
+            background-color: #5c636a;
+            border-color: #565e64;
+            transform: translateY(-1px);
+        }
+
+        .view-link {
+            color: blue;
+            text-decoration: underline;
+        }
+        .view-link:hover {
+            color: #1e40af;
+            text-decoration: underline;
+        }
+
+        .table-container {
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .page-title {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+      
+        
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container-fluid mt-5 px-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="page-title">All Emails</h2>
+        </div>
+
+        <div class="table-container bg-white">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Id</th>
+                            <th>IMAP Subject</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="smtp-details" id="smtpTable">
+                        <tr>
+                            <td>1</td>
+                            <td>Primary Gmail Account IMAP</td>
+                            <td><a href="#" class="view-link">View More</a></td>
+                            <td><a href="#" class="view-link">View Leads</a></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Office 365 IMAP</td>
+                            <td><a href="#" class="view-link">View More</a></td>
+                            <td><a href="#" class="view-link">View Leads</a></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>AWS SES IMAP</td>
+                            <td><a href="#" class="view-link">View More</a></td>
+                            <td><a href="#" class="view-link">View Leads</a></td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>Marketing Mailgun IMAP</td>
+                            <td><a href="#" class="view-link">View More</a></td>
+                            <td><a href="#" class="view-link">View Leads</a></td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Support Zoho IMAP</td>
+                            <td><a href="#" class="view-link">View More</a></td>
+                            <td><a href="#" class="view-link">View Leads</a></td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>SendGrid Transactional IMAP</td>
+                            <td><a href="#" class="view-link">View More</a></td>
+                            <td><a href="#" class="view-link">View Leads</a></td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>Backup Gmail IMAP</td>
+                            <td><a href="#" class="view-link">View More</a></td>
+                            <td><a href="#" class="view-link">View Leads</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+   
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Email Source</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        .form-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .form-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .form-floating {
+            margin-bottom: 1.25rem;
+        }
+        
+        .submit-btn {
+            padding: 0.8rem 2rem;
+            font-weight: 500;
+        }
+        
+        .required-field::after {
+            content: "*";
+            color: #dc3545;
+            margin-left: 4px;
+        }
+
+        /* Small helper text style */
+        .helper-text {
+            font-size: 0.75rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <h3 class="mb-0">Create Email Source</h3>
+            </div>
+
+            <form id="createEmailSourceForm" novalidate>
+                <div class="row g-3">
+                    <!-- ID Field -->
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="sourceId" placeholder="ID" required>
+                            <label for="sourceId" class="required-field">ID</label>
+                            <div class="invalid-feedback">
+                                Please enter a valid ID.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Name Field -->
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="sourceName" placeholder="Name" required>
+                            <label for="sourceName" class="required-field">Name</label>
+                            <div class="invalid-feedback">
+                                Please enter a name.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Field -->
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="sourceStatus" placeholder="Status" required pattern="[01]">
+                            <label for="sourceStatus" class="required-field">Status</label>
+                            <div class="invalid-feedback">
+                                Please enter 0 or 1 for status.
+                            </div>
+                            <div class="helper-text">Enter 1 for active, 0 for inactive</div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-primary submit-btn w-100">
+                            Create Email Source
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Form Validation
+        (() => {
+            'use strict';
+
+            const form = document.getElementById('createEmailSourceForm');
+            
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                } else {
+                    // Handle form submission
+                    event.preventDefault();
+                    const formData = new FormData(form);
+                    console.log('Form submitted:', Object.fromEntries(formData));
+                }
+
+                form.classList.add('was-validated');
+            });
+        })();
+    </script>
+</body>
+</html>

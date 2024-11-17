@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create User</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        .form-container {
+            max-width: 700px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .form-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .form-floating {
+            margin-bottom: 1.25rem;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6c757d;
+        }
+        
+        .submit-btn {
+            padding: 0.8rem 2rem;
+            font-weight: 500;
+        }
+        
+        .required-field::after {
+            content: "*";
+            color: #dc3545;
+            margin-left: 4px;
+        }
+
+        /* Small helper text style */
+        .helper-text {
+            font-size: 0.75rem;
+            color: #6c757d;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <h3 class="mb-0">Create New User</h3>
+                
+            </div>
+
+            <form id="createUserForm" novalidate>
+                <div class="row g-3">
+                    <!-- ID Field -->
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="userId" placeholder="ID" required>
+                            <label for="userId" class="required-field">ID</label>
+                            <div class="invalid-feedback">
+                                Please enter a valid ID.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account ID Field -->
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="accountId" placeholder="Account ID" required>
+                            <label for="accountId" class="required-field">Account ID</label>
+                            <div class="invalid-feedback">
+                                Please enter a valid Account ID.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Name Field -->
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="userName" placeholder="Name" required>
+                            <label for="userName" class="required-field">Name</label>
+                            <div class="invalid-feedback">
+                                Please enter your name.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="email" class="form-control" id="userEmail" placeholder="Email" required>
+                            <label for="userEmail" class="required-field">Email</label>
+                            <div class="invalid-feedback">
+                                Please enter a valid email address.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Phone Field -->
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="tel" class="form-control" id="userPhone" placeholder="Phone" required>
+                            <label for="userPhone" class="required-field">Phone</label>
+                            <div class="invalid-feedback">
+                                Please enter a valid phone number.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <input type="password" class="form-control" id="userPassword" placeholder="Password" required>
+                            <label for="userPassword" class="required-field">Password</label>
+                            <i class="password-toggle fas fa-eye" onclick="togglePassword()"></i>
+                            <div class="invalid-feedback">
+                                Please enter a password.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Type Field -->
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="userType" placeholder="User Type" required>
+                            <label for="userType" class="required-field">User Type</label>
+                            <div class="invalid-feedback">
+                                Please enter user type.
+                            </div>
+                            <div class="helper-text">Enter type (e.g., admin, user, manager)</div>
+                        </div>
+                    </div>
+
+                    <!-- Status Field -->
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" id="userStatus" placeholder="Status" required 
+                                   pattern="[01]">
+                            <label for="userStatus" class="required-field">Status</label>
+                            <div class="invalid-feedback">
+                                Please enter 0 or 1 for status.
+                            </div>
+                            <div class="helper-text">Enter 1 for active, 0 for inactive</div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-primary submit-btn w-100">
+                            Create User
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Form Validation
+        (() => {
+            'use strict';
+
+            const form = document.getElementById('createUserForm');
+            
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                } else {
+                    // Here you would typically handle the form submission
+                    event.preventDefault();
+                    const formData = new FormData(form);
+                    console.log('Form submitted:', Object.fromEntries(formData));
+                }
+
+                form.classList.add('was-validated');
+            });
+        })();
+
+        // Password Toggle
+        function togglePassword() {
+            const passwordInput = document.getElementById('userPassword');
+            const toggleIcon = document.querySelector('.password-toggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+    </script>
+</body>
+</html>
