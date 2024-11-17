@@ -7,7 +7,7 @@ import json
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
 
-# Route for the index page with the form
+# route everytime to signin first time
 @app.route("/", methods=["GET", "POST"])
 def index():
     conn = connect_to_sql()
@@ -51,6 +51,10 @@ def index():
 
     return render_template("index.html", accounts=accounts, rules=rules)
 
+#Sign - In
+@app.route('/signin', methods=["GET"])
+
+# - all leads
 @app.route('/leads', methods=["GET"])
 def leads():
     conn = connect_to_sql()
@@ -92,20 +96,39 @@ def leads():
     return render_template("leads.html", leads=leads_data)
 
 # - All emails
+@app.route('/leads', methods=["GET"])
 # - view more of 1 email button
-# - all leads
+@app.route('/leads', methods=["GET"])
+
 # - view more of 1 lead button
+@app.route('/leads', methods=["GET"])
 # - basic filter to filter all leads from one email
+@app.route('/leads', methods=["GET"])
 # - sign in
+@app.route('/leads', methods=["GET"])
 # - create user only admin
+@app.route('/leads', methods=["GET"])
 # - create account only admin
+@app.route('/leads', methods=["GET"])
 # - uodate account only admin
+@app.route('/leads', methods=["GET"])
 # - ac email filters create/update
+@app.route('/leads', methods=["GET"])
 # - ac email filters ka delete [just button]
+@app.route('/leads', methods=["GET"])
 # - email_source  creste/update 
+@app.route('/leads', methods=["GET"])
 # - delete email source just button
+@app.route('/leads', methods=["GET"])
 # - email parser regex create/update 
+@app.route('/leads', methods=["GET"])
 # - delete email parser regex
+@app.route('/leads', methods=["GET"])
+
+
+
+
+
 
 def add_email_fetch_job(account_id, rule_id, since_date, batch_size):
     """Add a new job to email_fetch_queue with pending status."""
