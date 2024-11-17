@@ -1,11 +1,14 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
-from helper import connect_to_sql
-from config import BATCH_SIZE
-from datetime import datetime
 import json
+from datetime import datetime
+
+from flask import Flask, flash, redirect, render_template, request, url_for
+
+from config import BATCH_SIZE
+from helper import connect_to_sql
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
+
 
 # route everytime to signin first time
 @app.route("/", methods=["GET", "POST"])
@@ -51,15 +54,19 @@ def index():
 
     return render_template("index.html", accounts=accounts, rules=rules)
 
-#Sign - In
-@app.route('/signin', methods=["GET"])
+
+# Sign - In
+@app.route("/signin", methods=["GET"])
+def sign_in():
+    pass
+
 
 # - all leads
-@app.route('/leads', methods=["GET"])
+@app.route("/leads", methods=["GET"])
 def leads():
     conn = connect_to_sql()
     cursor = conn.cursor(dictionary=True)
-    
+
     # Join query to get leads and corresponding email data
     query = """
     SELECT 
@@ -71,63 +78,121 @@ def leads():
     WHERE l.status = 1
     ORDER BY l.created_by DESC
     """
-    
+
     cursor.execute(query)
     leads_data = cursor.fetchall()
-    
+
     # Process the JSON strings
     for lead in leads_data:
-        if lead['mail_regex_applied']:
+        if lead["mail_regex_applied"]:
             try:
                 # print(lead['mail_regex_applied'])
-                lead['mail_regex_applied'] = json.loads(lead['mail_regex_applied'])
+                lead["mail_regex_applied"] = json.loads(lead["mail_regex_applied"])
             except:
-                lead['mail_regex_applied'] = lead['mail_regex_applied']
-                
-        if lead['mail_regex_output']:
+                lead["mail_regex_applied"] = lead["mail_regex_applied"]
+
+        if lead["mail_regex_output"]:
             try:
-                lead['mail_regex_output'] = lead['mail_regex_output'].split('\n')
+                lead["mail_regex_output"] = lead["mail_regex_output"].split("\n")
             except:
-                lead['mail_regex_output'] = []
-    
+                lead["mail_regex_output"] = []
+
     cursor.close()
     conn.close()
-    
+
     return render_template("leads.html", leads=leads_data)
 
+
+# All users
+@app.route("/users", methods=["GET"])
+def users():
+    pass
+
+
+# All accounts
+@app.route("/accounts", methods=["GET"])
+def acccounts():
+    pass
+
+
 # - All emails
-@app.route('/leads', methods=["GET"])
+@app.route("/emails", methods=["GET"])
+def emails():
+    pass
+
+
 # - view more of 1 email button
-@app.route('/leads', methods=["GET"])
+@app.route("/emaildetails/<str:email_id>", methods=["GET"])
+def email_details():
+    pass
+
 
 # - view more of 1 lead button
-@app.route('/leads', methods=["GET"])
+@app.route("/leaddetails/<str:lead_id>", methods=["GET"])
+def lead_details():
+    pass
+
+
 # - basic filter to filter all leads from one email
-@app.route('/leads', methods=["GET"])
-# - sign in
-@app.route('/leads', methods=["GET"])
+@app.route("/emailleads/<str:email_id>", methods=["GET"])
+def email_leads():
+    pass
+
+
 # - create user only admin
-@app.route('/leads', methods=["GET"])
+@app.route("/createuser", methods=["GET"])
+def create_user():
+    pass
+
+
+@app.route("/updateuser/<str:user_id>", methods=["GET"])
+def update_user():
+    pass
+
+
 # - create account only admin
-@app.route('/leads', methods=["GET"])
+@app.route("/createaccount", methods=["GET"])
+def create_account():
+    pass
+
+
 # - uodate account only admin
-@app.route('/leads', methods=["GET"])
+@app.route("/updateaccount/<str:account_id>", methods=["GET"])
+def update_account():
+    pass
+
+
 # - ac email filters create/update
-@app.route('/leads', methods=["GET"])
-# - ac email filters ka delete [just button]
-@app.route('/leads', methods=["GET"])
-# - email_source  creste/update 
-@app.route('/leads', methods=["GET"])
-# - delete email source just button
-@app.route('/leads', methods=["GET"])
-# - email parser regex create/update 
-@app.route('/leads', methods=["GET"])
-# - delete email parser regex
-@app.route('/leads', methods=["GET"])
+@app.route("/createaccountemailfilters", methods=["GET"])
+def create_account_email_filters():
+    pass
 
 
+@app.route("/updateaccountemailfilters/<str:account_email_filters_id>", methods=["GET"])
+def update_account_email_filters():
+    pass
 
 
+# - email_source  creste/update
+@app.route("/createemailsource", methods=["GET"])
+def create_email_source():
+    pass
+
+
+@app.route("/updateemailsource/<str:email_source_id>", methods=["GET"])
+def update_email_source():
+    pass
+
+
+# - email parser regex create/update
+@app.route("/createemailparserregex", methods=["GET"])
+def create_email_parser_regex():
+    pass
+
+
+@app.route("/updateemailparserregex/<str:email_parser_regex_id>", methods=["GET"])
+def update_email_parser_regex():
+    pass
 
 
 def add_email_fetch_job(account_id, rule_id, since_date, batch_size):
@@ -146,6 +211,7 @@ def add_email_fetch_job(account_id, rule_id, since_date, batch_size):
     conn.commit()
     cursor.close()
     conn.close()
+
 
 if __name__ == "__main__":
     app.run(debug=True)
