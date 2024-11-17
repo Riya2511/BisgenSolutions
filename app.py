@@ -9,7 +9,6 @@ from helper import connect_to_sql
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
 
-
 # route everytime to signin first time
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -54,12 +53,10 @@ def index():
 
     return render_template("index.html", accounts=accounts, rules=rules)
 
-
 # Sign - In
 @app.route("/signin", methods=["GET"])
 def sign_in():
     pass
-
 
 # - all leads
 @app.route("/leads", methods=["GET"])
@@ -102,98 +99,81 @@ def leads():
 
     return render_template("leads.html", leads=leads_data)
 
-
 # All users
 @app.route("/users", methods=["GET"])
 def users():
     pass
-
 
 # All accounts
 @app.route("/accounts", methods=["GET"])
 def acccounts():
     pass
 
-
 # - All emails
 @app.route("/emails", methods=["GET"])
 def emails():
     pass
-
 
 # - view more of 1 email button
 @app.route("/emaildetails/<str:email_id>", methods=["GET"])
 def email_details():
     pass
 
-
 # - view more of 1 lead button
 @app.route("/leaddetails/<str:lead_id>", methods=["GET"])
 def lead_details():
     pass
-
 
 # - basic filter to filter all leads from one email
 @app.route("/emailleads/<str:email_id>", methods=["GET"])
 def email_leads():
     pass
 
-
 # - create user only admin
 @app.route("/createuser", methods=["GET"])
 def create_user():
     pass
 
-
 @app.route("/updateuser/<str:user_id>", methods=["GET"])
 def update_user():
     pass
-
 
 # - create account only admin
 @app.route("/createaccount", methods=["GET"])
 def create_account():
     pass
 
-
 # - uodate account only admin
 @app.route("/updateaccount/<str:account_id>", methods=["GET"])
 def update_account():
     pass
-
 
 # - ac email filters create/update
 @app.route("/createaccountemailfilters", methods=["GET"])
 def create_account_email_filters():
     pass
 
-
 @app.route("/updateaccountemailfilters/<str:account_email_filters_id>", methods=["GET"])
 def update_account_email_filters():
     pass
-
 
 # - email_source  creste/update
 @app.route("/createemailsource", methods=["GET"])
 def create_email_source():
     pass
 
-
 @app.route("/updateemailsource/<str:email_source_id>", methods=["GET"])
 def update_email_source():
     pass
-
 
 # - email parser regex create/update
 @app.route("/createemailparserregex", methods=["GET"])
 def create_email_parser_regex():
     pass
 
-
 @app.route("/updateemailparserregex/<str:email_parser_regex_id>", methods=["GET"])
 def update_email_parser_regex():
     pass
-
 
 def add_email_fetch_job(account_id, rule_id, since_date, batch_size):
     """Add a new job to email_fetch_queue with pending status."""
@@ -211,7 +191,6 @@ def add_email_fetch_job(account_id, rule_id, since_date, batch_size):
     conn.commit()
     cursor.close()
     conn.close()
-
 
 if __name__ == "__main__":
     app.run(debug=True)
