@@ -1,196 +1,221 @@
+from flask import Flask, abort, flash, redirect, render_template, request, url_for,make_response,session
 import json
-from datetime import datetime
 
-from flask import Flask, flash, redirect, render_template, request, url_for
-
-from config import BATCH_SIZE
+from security.authToken import AuthToken
+from config import FLASK_SECRET_KEY,JWT_SECRET_KEY
 from helper import connect_to_sql
+from security.authenticationValidation import auth_required,allowed_user_type
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key"
+app.config["SECRET_KEY"] = FLASK_SECRET_KEY
 
-# route everytime to signin first time
 @app.route("/", methods=["GET", "POST"])
 def index():
+    """Redirects users to the sign-in page."""
+    return redirect(url_for("sign_in"))
+
+@app.route("/signin", methods=["GET", "POST"])
+def sign_in():
+    """Handles user sign-in."""
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+        print(f"Email: {email}, Password: {password}")
+        conn = connect_to_sql()
+        leads_data = None
+        if not conn:
+            flash("Failed to connect to the database.")
+            return render_template("leads.html", leads=[])
+
+        try:
+            cursor = conn.cursor(dictionary=True)
+            query = "SELECT * FROM users WHERE email = %s AND password = %s"
+            cursor.execute(query, (email, password))
+
+            leads_data = cursor.fetchall()  
+            if not leads_data:  
+                return redirect(url_for("sign_in"))
+        finally:
+            cursor.close()
+            conn.close()
+        
+        if leads_data:
+            userData = {
+                    "email" : leads_data[0]['email'],
+                    "user_type" : leads_data[0]['user_type'],
+                    "password" : leads_data[0]['password'],
+                    "account_id": leads_data[0]['account_id']
+                }
+            print(userData)
+            authToken = AuthToken().encode(userData)
+            session['authToken']  = authToken[0]
+            response = make_response(redirect("/leads"))
+            return response
+        
+    return render_template("SignIn.html")
+
+
+@app.route("/leads", methods=["GET"])
+# @auth_required()
+@allowed_user_type(['admin'])
+def leads(**kwargs):
+    print(kwargs['current_user'])
+    # print("jererere")
+    # print(validateCurrentUser())
+    """Displays all leads."""
     conn = connect_to_sql()
     if not conn:
         flash("Failed to connect to the database.")
-        return render_template("index.html", accounts=[], rules=[])
+        return render_template("leads.html", leads=[])
 
-    cursor = conn.cursor(dictionary=True)
+    try:
+        cursor = conn.cursor(dictionary=True)
+        query = """
+        SELECT 
+            l.*,
+            e.mail_regex_applied,
+            e.mail_regex_output
+        FROM leads l
+        LEFT JOIN email e ON l.email_id = e.id
+        WHERE l.status = 1
+        ORDER BY l.created_by DESC
+        """
+        cursor.execute(query)
+        leads_data = cursor.fetchall()
 
-    # Fetch accounts and rules for dropdowns
-    cursor.execute("SELECT id, name FROM accounts where status = 1")
-    accounts = cursor.fetchall()
+        for lead in leads_data:
+            if lead["mail_regex_applied"]:
+                try:
+                    lead["mail_regex_applied"] = json.loads(lead["mail_regex_applied"])
+                except json.JSONDecodeError:
+                    pass
 
-    cursor.execute("SELECT id, rule FROM account_email_filters where status = 1")
-    rules = cursor.fetchall()
-
-    cursor.close()
-    conn.close()
-
-    if request.method == "POST":
-        account_id = request.form.get("account")
-        rule_id = request.form.get("rule")
-        since_date = request.form.get("since_date")  # Get the since date from the form
-
-        if not account_id or not rule_id:
-            flash("Please select both account and rule.")
-            return redirect(url_for("index"))
-
-        # Parse since_date
-        try:
-            since_date = datetime.strptime(since_date, "%Y-%m-%d").date()
-        except ValueError:
-            flash("Invalid date format. Please use YYYY-MM-DD.")
-            return redirect(url_for("index"))
-
-        # Store job in email_fetch_queue
-        add_email_fetch_job(account_id, rule_id, since_date, BATCH_SIZE)
-        flash("Job added to fetch emails. They will be processed shortly.")
-
-        return redirect(url_for("index"))
-
-    return render_template("index.html", accounts=accounts, rules=rules)
-
-# Sign - In
-@app.route("/signin", methods=["GET"])
-def sign_in():
-    pass
-
-# - all leads
-@app.route("/leads", methods=["GET"])
-def leads():
-    conn = connect_to_sql()
-    cursor = conn.cursor(dictionary=True)
-
-    # Join query to get leads and corresponding email data
-    query = """
-    SELECT 
-        l.*,
-        e.mail_regex_applied,
-        e.mail_regex_output
-    FROM leads l
-    LEFT JOIN email e ON l.email_id = e.id
-    WHERE l.status = 1
-    ORDER BY l.created_by DESC
-    """
-
-    cursor.execute(query)
-    leads_data = cursor.fetchall()
-
-    # Process the JSON strings
-    for lead in leads_data:
-        if lead["mail_regex_applied"]:
-            try:
-                # print(lead['mail_regex_applied'])
-                lead["mail_regex_applied"] = json.loads(lead["mail_regex_applied"])
-            except:
-                lead["mail_regex_applied"] = lead["mail_regex_applied"]
-
-        if lead["mail_regex_output"]:
-            try:
+            if lead["mail_regex_output"]:
                 lead["mail_regex_output"] = lead["mail_regex_output"].split("\n")
-            except:
-                lead["mail_regex_output"] = []
 
-    cursor.close()
-    conn.close()
+    finally:
+        cursor.close()
+        conn.close()
 
     return render_template("leads.html", leads=leads_data)
 
-# All users
 @app.route("/users", methods=["GET"])
-def users():
-    pass
+def users(**kwargs):
+    """Displays all users."""
+    return "All users placeholder."
 
-# All accounts
 @app.route("/accounts", methods=["GET"])
-def acccounts():
-    pass
+def accounts(**kwargs):
+    """Displays all accounts."""
+    return "All accounts placeholder."
 
-# - All emails
 @app.route("/emails", methods=["GET"])
-def emails():
-    pass
+def emails(**kwargs):
+    """Displays all emails."""
+    return "All emails placeholder."
 
-# - view more of 1 email button
-@app.route("/emaildetails/<str:email_id>", methods=["GET"])
-def email_details():
-    pass
+@app.route("/emaildetails/<string:email_id>", methods=["GET"])
+def email_details(email_id,**kwargs):
+    """Displays details of a specific email."""
+    return f"Details for email ID: {email_id}"
 
-# - view more of 1 lead button
-@app.route("/leaddetails/<str:lead_id>", methods=["GET"])
-def lead_details():
-    pass
+@app.route("/leaddetails/<string:lead_id>", methods=["GET"])
+def lead_details(lead_id,**kwargs):
+    """Displays details of a specific lead."""
+    return f"Details for lead ID: {lead_id}"
 
-# - basic filter to filter all leads from one email
-@app.route("/emailleads/<str:email_id>", methods=["GET"])
-def email_leads():
-    pass
+@app.route("/emailleads/<string:email_id>", methods=["GET"])
+def email_leads(email_id,**kwargs):
+    """Filters leads for a specific email."""
+    return f"Leads for email ID: {email_id}"
 
-# - create user only admin
-@app.route("/createuser", methods=["GET"])
-def create_user():
-    pass
+@app.route("/createuser", methods=["GET", "POST"])
+def create_user(**kwargs):
+    """Allows admin to create a new user."""
+    return "Create user placeholder."
 
-@app.route("/updateuser/<str:user_id>", methods=["GET"])
-def update_user():
-    pass
+@app.route("/updateuser/<string:user_id>", methods=["GET", "POST"])
+def update_user(user_id,**kwargs):
+    """Allows admin to update an existing user."""
+    return f"Update user ID: {user_id}"
 
-# - create account only admin
-@app.route("/createaccount", methods=["GET"])
-def create_account():
-    pass
+@app.route("/createaccount", methods=["GET", "POST"])
+def create_account(**kwargs):
+    """Allows admin to create a new account."""
+    return "Create account placeholder."
 
-# - uodate account only admin
-@app.route("/updateaccount/<str:account_id>", methods=["GET"])
-def update_account():
-    pass
+@app.route("/updateaccount/<string:account_id>", methods=["GET", "POST"])
+def update_account(account_id,**kwargs):
+    """Allows admin to update an existing account."""
+    return f"Update account ID: {account_id}"
 
-# - ac email filters create/update
-@app.route("/createaccountemailfilters", methods=["GET"])
-def create_account_email_filters():
-    pass
+@app.route("/createaccountemailfilters", methods=["GET", "POST"])
+def create_account_email_filters(**kwargs):
+    """Allows admin to create email filters for an account."""
+    return "Create account email filters placeholder."
 
-@app.route("/updateaccountemailfilters/<str:account_email_filters_id>", methods=["GET"])
-def update_account_email_filters():
-    pass
+@app.route("/updateaccountemailfilters/<string:account_email_filters_id>", methods=["GET", "POST"])
+def update_account_email_filters(account_email_filters_id,**kwargs):
+    """Allows admin to update email filters for an account."""
+    return f"Update account email filters ID: {account_email_filters_id}"
 
-# - email_source  creste/update
-@app.route("/createemailsource", methods=["GET"])
-def create_email_source():
-    pass
+@app.route("/createemailsource", methods=["GET", "POST"])
+def create_email_source(**kwargs):
+    """Allows admin to create a new email source."""
+    return "Create email source placeholder."
 
-@app.route("/updateemailsource/<str:email_source_id>", methods=["GET"])
-def update_email_source():
-    pass
+@app.route("/updateemailsource/<string:email_source_id>", methods=["GET", "POST"])
+def update_email_source(email_source_id,**kwargs):
+    """Allows admin to update an email source."""
+    return f"Update email source ID: {email_source_id}"
 
-# - email parser regex create/update
-@app.route("/createemailparserregex", methods=["GET"])
-def create_email_parser_regex():
-    pass
+@app.route("/createemailparserregex", methods=["GET", "POST"])
+def create_email_parser_regex(**kwargs):
+    """Allows admin to create a new email parser regex."""
+    return "Create email parser regex placeholder."
 
-@app.route("/updateemailparserregex/<str:email_parser_regex_id>", methods=["GET"])
-def update_email_parser_regex():
-    pass
+@app.route("/updateemailparserregex/<string:email_parser_regex_id>", methods=["GET", "POST"])
+def update_email_parser_regex(email_parser_regex_id,**kwargs):
+    """Allows admin to update an email parser regex."""
+    return f"Update email parser regex ID: {email_parser_regex_id}"
+
+@app.route("/createemailparser", methods=["GET", "POST"])
+def create_email_parser(**kwargs):
+    """Allows admin to create a new email parser regex."""
+    return "Create email parser regex placeholder."
+
+@app.route("/updateemailparser/<string:email_parser_id>", methods=["GET", "POST"])
+def update_email_parser(email_parser_id,**kwargs):
+    """Allows admin to update an email parser"""
+    return f"Update email parser ID: {email_parser_id}"
+
+@app.route("/createemailfetchqueue", methods=["GET", "POST"])
+def create_email_fetch_queue(**kwargs):
+    """Allows admin to create a new email fetch queue."""
+    return "Create email fetch queue placeholder."
+
+@app.route("/updateemailfetchqueue/<string:email_fetch_queue_id>", methods=["GET", "POST"])
+def update_email_fetch_queue(email_fetch_queue_id,**kwargs):
+    """Allows admin to update an email fetch queue"""
+    return f"Update email fetch queue ID: {email_fetch_queue_id}"
 
 def add_email_fetch_job(account_id, rule_id, since_date, batch_size):
-    """Add a new job to email_fetch_queue with pending status."""
+    """Adds a new job to the email fetch queue."""
     conn = connect_to_sql()
     if not conn:
         print("Database connection failed.")
         return
-
-    cursor = conn.cursor()
-    query = """
-        INSERT INTO email_fetch_queue (account_id, rule_id, since_date, batch_size, status)
-        VALUES (%s, %s, %s, %s, 'pending')
-    """
-    cursor.execute(query, (account_id, rule_id, since_date, batch_size))
-    conn.commit()
-    cursor.close()
-    conn.close()
+    try:
+        cursor = conn.cursor()
+        query = """
+            INSERT INTO email_fetch_queue (account_id, rule_id, since_date, batch_size, status)
+            VALUES (%s, %s, %s, %s, 'pending')
+        """
+        cursor.execute(query, (account_id, rule_id, since_date, batch_size))
+        conn.commit()
+    finally:
+        cursor.close()
+        conn.close()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,host="0.0.0.0")
