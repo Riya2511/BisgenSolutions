@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leads Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function toggleDetails(id) {
+            const details = document.getElementById(`details-${id}`);
+            if (details.classList.contains('hidden')) {
+                details.classList.remove('hidden');
+            } else {
+                details.classList.add('hidden');
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-2 py-8 w-full">
+        <h1 class="text-2xl font-bold mb-6">Leads Dashboard</h1>
+        
+        <div class="overflow-x-auto bg-white rounded-lg shadow">
+            <table class="min-w-full divide-y divide-gray-200 w-full">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">S.No</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                        <th class="px-6 py-3 w-28 text-wrap text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Value</th>
+                        <th class="px-6 py-3 w-28 text-wrap text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Buyer Since</th>
+                        <th class="px-6 py-3 w-28 text-wrap text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usage</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for lead in leads %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ loop.index }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ lead.name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ lead.email }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ lead.mail_quantity }}</td>
+                        <td class="px-6 py-4 w-28 text-wrap">{{ lead.mail_order_value }}</td>
+                        <td class="px-6 py-4 w-28 text-wrap">{{ lead.mail_buyer_location }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ lead.mail_buyer_since }}</td>
+                        <td class="px-6 py-4 w-28 text-wrap">{{ lead.mail_usage }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <button 
+                                onclick="toggleDetails('{{ lead.id }}')"
+                                class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                            >
+                                Regex Info
+                            </button>
+                        </td>
+                    </tr>
+                    <tr id="details-{{ lead.id }}" class="hidden">
+                        <td colspan="11" class="px-6 py-4 bg-gray-50">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <h3 class="font-bold mb-2">Regex Applied:</h3>
+                                    <pre class="bg-gray-100 p-4 rounded overflow-x-auto">
+{% if lead.mail_regex_applied is string %}
+{{ lead.mail_regex_applied }}
+{% else %}
+{{ lead.mail_regex_applied | tojson(indent=2) }}
+{% endif %}
+                                    </pre>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold mb-2">Regex Output:</h3>
+                                    <pre class="bg-gray-100 p-4 rounded overflow-x-auto">
+{% if lead.mail_regex_output is string %}
+{{ lead.mail_regex_output }}
+{% else %}
+{% for line in lead.mail_regex_output %}
+{{ line }}
+{% endfor %}
+{% endif %}
+                                    </pre>
+                                </div>
+                            </div>
+                            <div class="mt-4 grid grid-cols-2 gap-4">
+                                <div>
+                                    <h3 class="font-bold mb-2">Additional Information:</h3>
+                                    <ul class="list-disc list-inside">
+                                        <li>Email Id: {{ lead.email_id }}</li>
+                                        <li>Buyer Type: {{ lead.mail_buyer_type }}</li>
+                                        <li>Requirement: {{ lead.mail_requirement }}</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold mb-2">Timestamps:</h3>
+                                    <ul class="list-disc list-inside">
+                                        <li>Created: {{ lead.created_by }}</li>
+                                        <li>Updated: {{ lead.updated_by }}</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

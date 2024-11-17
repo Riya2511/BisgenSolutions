@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Fetcher</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-semibold text-center mb-6 text-gray-700">Fetch Emails</h2>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="mb-4 text-center text-sm text-green-600">
+              {% for message in messages %}
+                <p>{{ message }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        
+
+        <form action="/" method="POST" class="space-y-4">
+            <div>
+                <label for="account" class="block text-gray-600 font-medium mb-2">Select Account</label>
+                <select id="account" name="account" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300">
+                    <option value="">Choose an Account</option>
+                    {% for account in accounts %}
+                        <option value="{{ account['id'] }}">{{ account['name'] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="rule" class="block text-gray-600 font-medium mb-2">Select Rule</label>
+                <select id="rule" name="rule" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300">
+                    <option value="">Choose a Rule</option>
+                    {% for rule in rules %}
+                        <option value="{{ rule['id'] }}">{{ rule['rule'] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="since_date" class="block text-gray-600 font-medium mb-2">Since Date</label>
+                <input type="date" id="since_date" name="since_date" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300">
+            </div>
+
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 transition duration-200">
+                Fetch Emails
+            </button>
+        </form>
+        <div class="h-5"></div>
+        <div class="bg-green-600 py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring focus:ring-blue-300">
+            <a href="/leads" class="">
+                <h2 class="text-center  text-white">See Leads List</h2>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
