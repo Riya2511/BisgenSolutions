@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}
+    All Email Parser
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="page-title">All Email Parsers</h2>
+            <a href="/createemailparser" class="btn btn-primary">Create Email Parser</a>
+        </div>
+
+        <div class="table-container bg-white">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Id</th>
+                            <th>Parsing Name</th>
+                            <th>Email Source Id</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lead in leads %}
+                            <tr>
+                                <td>{{ lead.id }}</td>
+                                <td>{{ lead.parsing_name }}</td>
+                                <td>{{ lead.email_source_id }}</td>
+                                <td><a href="{{ url_for('update_email_parser', email_parser_id=lead.id) }}" class="email-id"><i class="fas fa-edit me-1"></i>Update</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

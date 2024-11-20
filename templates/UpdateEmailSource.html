@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <div class="form-header">
+            <h3 class="mb-3">Update Email Source</h3>
+        </div>
+
+        <form method="POST" id="updateEmailSourceForm" novalidate>
+            <div class="row g-3">
+
+                <!-- Name Field -->
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="sourceName" name="sourceName" placeholder="Name" 
+                               value="{{ email_source.name }}" required>
+                        <label for="sourceName" class="required-field">Name</label>
+                        <div class="invalid-feedback">
+                            Please enter a name.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Field -->
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="sourceStatus" name="sourceStatus" placeholder="Status" 
+                               value="{{ email_source.status }}" required pattern="[01]">
+                        <label for="sourceStatus" class="required-field">Status</label>
+                        <div class="invalid-feedback">
+                            Please enter 0 or 1 for status.
+                        </div>
+                        <div class="helper-text">Enter 1 for active, 0 for inactive</div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="col-12 mt-4">
+                    <button type="submit" class="btn btn-primary submit-btn w-100">
+                        Update Email Source
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+<script>
+    // Form Validation
+    (() => {
+        'use strict';
+
+        const form = document.getElementById('updateEmailSourceForm');
+        
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            form.classList.add('was-validated');
+        });
+    })();
+</script>

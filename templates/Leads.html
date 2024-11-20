@@ -19,51 +19,21 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Quantity</th>
-                            <th>Email_id</th>
+                            <th>Email ID</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>John Doe</td>
-                            <td>john@example.com</td>
-                            <td>5</td>
-                            <td><a href="#" class="email-id">431</a></td>
-                            <td><a href="#" class="view-link">View More</a></td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Jane Smith</td>
-                            <td>jane@example.com</td>
-                            <td>3</td>
-                            <td><a href="#" class="email-id">432</a></td>
-                            <td><a href="#" class="view-link">View More</a></td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Bob Wilson</td>
-                            <td>bob@example.com</td>
-                            <td>7</td>
-                            <td><a href="#" class="email-id">433</a></td>
-                            <td><a href="#" class="view-link">View More</a></td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Alice Brown</td>
-                            <td>alice@example.com</td>
-                            <td>2</td>
-                            <td><a href="#" class="email-id">434</a></td>
-                            <td><a href="#" class="view-link">View More</a></td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>Charlie Davis</td>
-                            <td>charlie@example.com</td>
-                            <td>9</td>
-                            <td><a href="#" class="email-id">435</a></td>
-                            <td><a href="#" class="view-link">View More</a></td>
-                        </tr>
+                        {% for lead in leads %}
+                            <tr>
+                                <td>{{ lead.id }}</td>
+                                <td>{{ lead.name }}</td>
+                                <td>{{ lead.email }}</td>
+                                <td>{{ lead.qty }}</td>
+                                <td><a href="{{ url_for('email_details', email_id=lead.email_id) }}" class="email-id">{{ lead.email_id }}</a></td>
+                                <td><a href="{{ url_for('lead_details', lead_id=lead.id) }}" class="view-link">View More</a></td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>

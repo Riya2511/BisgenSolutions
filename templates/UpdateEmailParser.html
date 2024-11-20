@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <div class="form-header">
+            <h3 class="mb-3">Update Email Parser</h3>
+        </div>
+
+        <form method="POST" id="updateEmailParserForm" novalidate>
+            <div class="row g-3">
+
+                <!-- Parsing Name Field -->
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="parsingName" name="parsingName" value="{{ parser.parsing_name }}" required>
+                        <label for="parsingName" class="required-field">Parsing Name</label>
+                        <div class="invalid-feedback">
+                            Please enter a valid parsing name.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Source ID Field -->
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="emailSourceId" name="emailSourceId" value="{{ parser.email_source_id }}" required>
+                        <label for="emailSourceId" class="required-field">Email Source ID</label>
+                        <div class="invalid-feedback">
+                            Please enter a valid email source ID.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Field -->
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="parserStatus" name="parserStatus" value="{{ parser.status }}" required pattern="[01]">
+                        <label for="parserStatus" class="required-field">Status</label>
+                        <div class="invalid-feedback">
+                            Please enter 0 or 1 for status.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="col-12 mt-4">
+                    <button type="submit" class="btn btn-primary submit-btn w-100">
+                        Update Parser
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Update Email Filter{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <div class="form-header">
+            <h3 class="mb-3">Update Account Email Filter</h3>
+        </div>
+
+        <form method="POST" id="updateEmailFilterForm" novalidate>
+            <div class="row g-3">
+                <!-- Rule Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="filterRule" name="filterRule" value="{{ email_filter.rule }}" placeholder="Rule" required>
+                        <label for="filterRule" class="required-field">Rule</label>
+                        <div class="invalid-feedback">Please enter a valid rule.</div>
+                    </div>
+                </div>
+
+                <!-- Filters on Subject Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="filtersOnSubject" name="filtersOnSubject" value="{{ email_filter.filters_on_subject }}" placeholder="Filters on Subject" required>
+                        <label for="filtersOnSubject" class="required-field">Filters on Subject</label>
+                        <div class="invalid-feedback">Please enter filters for the subject.</div>
+                    </div>
+                </div>
+
+                <!-- Filters on From Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="filtersOnFrom" name="filtersOnFrom" value="{{ email_filter.filters_on_from }}" placeholder="Filters on From" required>
+                        <label for="filtersOnFrom" class="required-field">Filters on From</label>
+                        <div class="invalid-feedback">Please enter filters for the sender.</div>
+                    </div>
+                </div>
+
+                <!-- Filters on Body Field -->
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="filtersOnBody" name="filtersOnBody" value="{{ email_filter.filters_on_body }}" placeholder="Filters on Body" required>
+                        <label for="filtersOnBody" class="required-field">Filters on Body</label>
+                        <div class="invalid-feedback">Please enter filters for the email body.</div>
+                    </div>
+                </div>
+
+                <!-- Account ID Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="accountId" name="accountId" value="{{ email_filter.account_id }}" placeholder="Account ID" required>
+                        <label for="accountId" class="required-field">Account ID</label>
+                        <div class="invalid-feedback">Please enter a valid Account ID.</div>
+                    </div>
+                </div>
+
+                <!-- Email Parser ID Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="emailParserId" name="emailParserId" value="{{ email_filter.email_parser_id }}" placeholder="Email Parser ID" required>
+                        <label for="emailParserId" class="required-field">Email Parser ID</label>
+                        <div class="invalid-feedback">Please enter a valid Email Parser ID.</div>
+                    </div>
+                </div>
+
+                <!-- Email Key Column Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="emailKeyColumn" name="emailKeyColumn" value="{{ email_filter.email_key_colums }}" placeholder="Email Key Column" required>
+                        <label for="emailKeyColumn" class="required-field">Email Key Column</label>
+                        <div class="invalid-feedback">Please enter a valid Email Key Column.</div>
+                    </div>
+                </div>
+
+                <!-- Status Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="filterStatus" name="filterStatus" value="{{ email_filter.status }}" placeholder="Status" required pattern="[01]">
+                        <label for="filterStatus" class="required-field">Status</label>
+                        <div class="invalid-feedback">Please enter 0 or 1 for status.</div>
+                        <div class="helper-text">Enter 1 for active, 0 for inactive</div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="col-12 mt-4">
+                    <button type="submit" class="btn btn-primary submit-btn w-100">Update Filter</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Validation script here
+</script>
+{% endblock %}

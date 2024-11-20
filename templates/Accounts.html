@@ -4,7 +4,8 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="page-title">All Accounts</h2>
+    <h2 class="page-title">All Accounts</h2> 
+    <a href="/createaccount" class="btn btn-primary">Create Account</a>
 </div>
 
 <div class="table-container bg-white">
@@ -23,104 +24,18 @@
                 </tr>
             </thead>
             <tbody class="smtp-details" id="smtpTable">
-                <tr>
-                    <td>1</td>
-                    <td>Primary Gmail</td>
-                    <td>smtp.gmail.com</td>
-                    <td>Password123!@#</td>
-                    <td>primary@company.com</td>
-                    <td>TLS</td>
-                    <td>587</td>
-                    <td>
-                        <button class="btn update-btn">
-                            <i class="fas fa-edit me-1"></i>Update
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Office 365 Main</td>
-                    <td>smtp.office365.com</td>
-                    <td>Off365Pass#2024</td>
-                    <td>notifications@company.com</td>
-                    <td>STARTTLS</td>
-                    <td>587</td>
-                    <td>
-                        <button class="btn update-btn">
-                            <i class="fas fa-edit me-1"></i>Update
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>AWS SES Account</td>
-                    <td>email-smtp.us-east-1.com</td>
-                    <td>AwsSmtp2024#$</td>
-                    <td>AKIAXXX</td>
-                    <td>TLS</td>
-                    <td>587</td>
-                    <td>
-                        <button class="btn update-btn">
-                            <i class="fas fa-edit me-1"></i>Update
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>Marketing Mailgun</td>
-                    <td>smtp.mailgun.org</td>
-                    <td>MGun#Pass2024</td>
-                    <td>postmaster@mg.company.com</td>
-                    <td>SSL</td>
-                    <td>465</td>
-                    <td>
-                        <button class="btn update-btn">
-                            <i class="fas fa-edit me-1"></i>Update
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>Support Zoho</td>
-                    <td>smtp.zoho.com</td>
-                    <td>ZohoMail2024!</td>
-                    <td>support@company.com</td>
-                    <td>TLS</td>
-                    <td>587</td>
-                    <td>
-                        <button class="btn update-btn">
-                            <i class="fas fa-edit me-1"></i>Update
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td>SendGrid Transactional</td>
-                    <td>smtp.sendgrid.net</td>
-                    <td>SGrid#Pass2024</td>
-                    <td>apikey</td>
-                    <td>TLS</td>
-                    <td>587</td>
-                    <td>
-                        <button class="btn update-btn">
-                            <i class="fas fa-edit me-1"></i>Update
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td>Backup Gmail</td>
-                    <td>smtp.gmail.com</td>
-                    <td>BackupPass2024#</td>
-                    <td>backup@company.com</td>
-                    <td>TLS</td>
-                    <td>587</td>
-                    <td>
-                        <button class="btn update-btn">
-                            <i class="fas fa-edit me-1"></i>Update
-                        </button>
-                    </td>
-                </tr>
+                {% for lead in leads %}
+                    <tr>
+                        <td>{{ lead.id }}</td>
+                        <td>{{ lead.name }}</td>
+                        <td>{{ lead.smtp_host }}</td>
+                        <td>{{ lead.smtp_password }}</td>
+                        <td>{{ lead.smtp_username }}</td>
+                        <td>{{ lead.smtp_encryption }}</td>
+                        <td>{{ lead.smtp_port }}</td>
+                        <td><a href="{{ url_for('update_account', account_id=lead.id) }}" class="email-id"><i class="fas fa-edit me-1"></i>Update</a></td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

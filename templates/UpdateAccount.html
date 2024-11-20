@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block title %}Update Account{% endblock %}
+
+{% block styles %}
+<style>
+    .form-container {
+        max-width: 700px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .form-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .form-floating {
+        margin-bottom: 1.25rem;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #6c757d;
+    }
+
+    .submit-btn {
+        padding: 0.8rem 2rem;
+        font-weight: 500;
+    }
+
+    .required-field::after {
+        content: "*";
+        color: #dc3545;
+        margin-left: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <div class="form-header">
+            <h3 class="mb-3">Update Account</h3>
+        </div>
+
+        <form method="POST" id="updateAccountForm" novalidate>
+            <div class="row g-3">
+
+                <!-- Name Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="accountName" name="accountName" value="{{ account.account_name }}" placeholder="Name" required>
+                        <label for="accountName" class="required-field">Name</label>
+                        <div class="invalid-feedback">
+                            Please enter the account name.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SMTP Host Field -->
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="smtpHost" name="smtpHost" value="{{ account.smtp_host }}" placeholder="SMTP Host" required>
+                        <label for="smtpHost" class="required-field">SMTP Host</label>
+                        <div class="invalid-feedback">
+                            Please enter the SMTP host.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SMTP Username Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="smtpUsername" name="smtpUsername" value="{{ account.smtp_username }}" placeholder="SMTP Username" required>
+                        <label for="smtpUsername" class="required-field">SMTP Username</label>
+                        <div class="invalid-feedback">
+                            Please enter the SMTP username.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SMTP Password Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="smtpPassword" name="smtpPassword" value="{{ account.smtp_password }}" placeholder="SMTP Password" required>
+                        <label for="smtpPassword" class="required-field">SMTP Password</label>
+                        <div class="invalid-feedback">
+                            Please enter the SMTP password.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SMTP Encryption Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="smtpEncryption" name="smtpEncryption" value="{{ account.smtp_encryption }}" placeholder="SMTP Encryption" required>
+                        <label for="smtpEncryption" class="required-field">SMTP Encryption</label>
+                        <div class="invalid-feedback">
+                            Please enter the SMTP encryption type (e.g., SSL, TLS).
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SMTP Port Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="smtpPort" name="smtpPort" value="{{ account.smtp_port }}" placeholder="SMTP Port" required>
+                        <label for="smtpPort" class="required-field">SMTP Port</label>
+                        <div class="invalid-feedback">
+                            Please enter the SMTP port number.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="col-12 mt-4">
+                    <button type="submit" class="btn btn-primary submit-btn w-100">
+                        Update Account
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Form Validation
+    (() => {
+        'use strict';
+
+        const form = document.getElementById('updateAccountForm');
+        
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            form.classList.add('was-validated');
+        });
+    })();
+
+    // Password Toggle (if needed)
+    function togglePassword() {
+        const passwordInput = document.getElementById('smtpPassword');
+        const toggleIcon = document.querySelector('.password-toggle');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    }
+</script>
+{% endblock %}

@@ -52,23 +52,13 @@
             <h3 class="mb-3">Create New Account</h3>
         </div>
 
-        <form id="createAccountForm" novalidate>
+        <form method="POST" id="createAccountForm" novalidate>
             <div class="row g-3">
-                <!-- ID Field -->
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="accountId" placeholder="ID" required>
-                        <label for="accountId" class="required-field">ID</label>
-                        <div class="invalid-feedback">
-                            Please enter a valid ID.
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Name Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="accountName" placeholder="Name" required>
+                        <input type="text" class="form-control" id="accountName" name="accountName" placeholder="Name" required>
                         <label for="accountName" class="required-field">Name</label>
                         <div class="invalid-feedback">
                             Please enter the account name.
@@ -79,7 +69,7 @@
                 <!-- SMTP Host Field -->
                 <div class="col-md-12">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="smtpHost" placeholder="SMTP Host" required>
+                        <input type="text" class="form-control" id="smtpHost" name="smtpHost" placeholder="SMTP Host" required>
                         <label for="smtpHost" class="required-field">SMTP Host</label>
                         <div class="invalid-feedback">
                             Please enter the SMTP host.
@@ -90,7 +80,7 @@
                 <!-- SMTP Username Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="smtpUsername" placeholder="SMTP Username" required>
+                        <input type="text" class="form-control" id="smtpUsername" name="smtpUsername" placeholder="SMTP Username" required>
                         <label for="smtpUsername" class="required-field">SMTP Username</label>
                         <div class="invalid-feedback">
                             Please enter the SMTP username.
@@ -101,7 +91,7 @@
                 <!-- SMTP Password Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="password" class="form-control" id="smtpPassword" placeholder="SMTP Password" required>
+                        <input type="text" class="form-control" id="smtpPassword" name="smtpPassword" placeholder="SMTP Password" required>
                         <label for="smtpPassword" class="required-field">SMTP Password</label>
                         <div class="invalid-feedback">
                             Please enter the SMTP password.
@@ -112,7 +102,7 @@
                 <!-- SMTP Encryption Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="smtpEncryption" placeholder="SMTP Encryption" required>
+                        <input type="text" class="form-control" id="smtpEncryption" name="smtpEncryption" placeholder="SMTP Encryption" required>
                         <label for="smtpEncryption" class="required-field">SMTP Encryption</label>
                         <div class="invalid-feedback">
                             Please enter the SMTP encryption type (e.g., SSL, TLS).
@@ -123,7 +113,7 @@
                 <!-- SMTP Port Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="smtpPort" placeholder="SMTP Port" required>
+                        <input type="text" class="form-control" id="smtpPort" name="smtpPort" placeholder="SMTP Port" required>
                         <label for="smtpPort" class="required-field">SMTP Port</label>
                         <div class="invalid-feedback">
                             Please enter the SMTP port number.

@@ -17,53 +17,21 @@
                         <tr>
                             <th>Id</th>
                             <th>IMAP Subject</th>
+                            <th>Status</th>
                             <th></th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody class="smtp-details" id="smtpTable">
-                        <tr>
-                            <td>1</td>
-                            <td>Primary Gmail Account IMAP</td>
-                            <td><a href="#" class="view-link">View More</a></td>
-                            <td><a href="#" class="view-link">View Leads</a></td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Office 365 IMAP</td>
-                            <td><a href="#" class="view-link">View More</a></td>
-                            <td><a href="#" class="view-link">View Leads</a></td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>AWS SES IMAP</td>
-                            <td><a href="#" class="view-link">View More</a></td>
-                            <td><a href="#" class="view-link">View Leads</a></td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>Marketing Mailgun IMAP</td>
-                            <td><a href="#" class="view-link">View More</a></td>
-                            <td><a href="#" class="view-link">View Leads</a></td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>Support Zoho IMAP</td>
-                            <td><a href="#" class="view-link">View More</a></td>
-                            <td><a href="#" class="view-link">View Leads</a></td>
-                        </tr>
-                        <tr>
-                            <td>6</td>
-                            <td>SendGrid Transactional IMAP</td>
-                            <td><a href="#" class="view-link">View More</a></td>
-                            <td><a href="#" class="view-link">View Leads</a></td>
-                        </tr>
-                        <tr>
-                            <td>7</td>
-                            <td>Backup Gmail IMAP</td>
-                            <td><a href="#" class="view-link">View More</a></td>
-                            <td><a href="#" class="view-link">View Leads</a></td>
-                        </tr>
+                        {% for lead in leads %}
+                            <tr>
+                                <td>{{ lead.id }}</td>
+                                <td>{{ lead.imap_subject }}</td>
+                                <td>{{ lead.status }}</td>
+                                <td><a href="{{ url_for('email_details', email_id=lead.id) }}" class="email-id">View More</a></td>
+                                <td><a href="{{ url_for('email_leads', email_id=lead.id) }}" class="view-link">View Leads</a></td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>

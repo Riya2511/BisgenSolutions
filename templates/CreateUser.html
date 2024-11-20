@@ -7,18 +7,8 @@
             <h3 class="mb-3">Create New User</h3>
         </div>
 
-        <form id="createUserForm" novalidate>
+        <form method="POST" id="createUserForm" novalidate>
             <div class="row g-3">
-                <!-- ID Field -->
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="userId" name="userId" placeholder="ID" required>
-                        <label for="userId" class="required-field">ID</label>
-                        <div class="invalid-feedback">
-                            Please enter a valid ID.
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Account ID Field -->
                 <div class="col-md-6">
@@ -83,7 +73,7 @@
                         <div class="invalid-feedback">
                             Please enter user type.
                         </div>
-                        <div class="helper-text">Enter type (e.g., admin, user, manager)</div>
+                        <div class="helper-text">Enter type (e.g., admin, user)</div>
                     </div>
                 </div>
 

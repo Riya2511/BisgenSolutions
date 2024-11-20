@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}
+    All Email Filters
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="page-title">All Account Email Filters</h2>
+            <a href="/createaccountemailfilters" class="btn btn-primary">Create Account Email Filters</a>
+        </div>
+
+        <div class="table-container bg-white">
+            <div class="table-responsive">
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Id</th>
+                            <th>Rule</th>
+                            <th>Filters On Subject</th>
+                            <th>Filters On From</th>
+                            <th>Filters On Body</th>
+                            <th>Account_id</th>
+                            <th>Email Parser Id</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lead in leads %}
+                            <tr>
+                                <td>{{ lead.id }}</td>
+                                <td>{{ lead.rule }}</td>
+                                <td>{{ lead.filters_on_subject }}</td>
+                                <td>{{ lead.filters_on_from }}</td>
+                                <td>{{ lead.filters_on_body }}</td>
+                                <td>{{ lead.account_id }}</td>
+                                <td>{{ lead.email_parser_id }}</td>
+                                <td><a href="{{ url_for('update_account_email_filters', account_email_filters_id=lead.id) }}" class="email-id"><i class="fas fa-edit me-1"></i>Update</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

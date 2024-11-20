@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <div class="form-header">
+            <h3 class="mb-3">Update User</h3>
+        </div>
+
+        <form method="POST" id="updateUserForm" novalidate>
+            <div class="row g-3">
+
+                <!-- Account ID Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="accountId" name="accountId" value="{{ user['account_id'] }}" placeholder="Account ID" required>
+                        <label for="accountId" class="required-field">Account ID</label>
+                        <div class="invalid-feedback">
+                            Please enter a valid Account ID.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Name Field -->
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="userName" name="userName" value="{{ user['name'] }}" placeholder="Name" required>
+                        <label for="userName" class="required-field">Name</label>
+                        <div class="invalid-feedback">
+                            Please enter your name.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="email" class="form-control" id="userEmail" name="userEmail" value="{{ user['email'] }}" placeholder="Email" required>
+                        <label for="userEmail" class="required-field">Email</label>
+                        <div class="invalid-feedback">
+                            Please enter a valid email address.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phone Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="tel" class="form-control" id="userPhone" name="userPhone" value="{{ user['phone'] }}" placeholder="Phone" required>
+                        <label for="userPhone" class="required-field">Phone</label>
+                        <div class="invalid-feedback">
+                            Please enter a valid phone number.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Password Field -->
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="userPassword" name="userPassword" placeholder="Password">
+                        <label for="userPassword">Password</label>
+                        <div class="invalid-feedback">
+                            Please enter a password.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Type Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="userType" name="userType" value="{{ user['user_type'] }}" placeholder="User Type" required>
+                        <label for="userType" class="required-field">User Type</label>
+                        <div class="invalid-feedback">
+                            Please enter user type.
+                        </div>
+                        <div class="helper-text">Enter type (e.g., admin, user)</div>
+                    </div>
+                </div>
+
+                <!-- Status Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="userStatus" name="userStatus" value="{{ user['status'] }}" placeholder="Status" required pattern="[01]">
+                        <label for="userStatus" class="required-field">Status</label>
+                        <div class="invalid-feedback">
+                            Please enter 0 or 1 for status.
+                        </div>
+                        <div class="helper-text">Enter 1 for active, 0 for inactive</div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="col-12 mt-4">
+                    <button type="submit" class="btn btn-primary submit-btn w-100">
+                        Update User
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

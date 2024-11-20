@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <div class="form-header">
+            <h3 class="mb-3">Update Email Parser Regex</h3>
+        </div>
+
+        <form method="POST" id="updateEmailParserRegexForm" novalidate>
+            <div class="row g-3">
+
+                <!-- Email Parser ID Field -->
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="emailParserId" name="emailParserId" value="{{ regex.email_parser_id }}" required>
+                        <label for="emailParserId" class="required-field">Email Parser ID</label>
+                        <div class="invalid-feedback">
+                            Please enter a valid email parser ID.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Regex Field -->
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <textarea class="form-control large-input" id="regex" name="regex" required>{{ regex.regex }}</textarea>
+                        <label for="regex" class="required-field">Regex</label>
+                        <div class="invalid-feedback">
+                            Please enter a valid regex pattern.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sample Data Field -->
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <textarea class="form-control large-input" id="sampleData" name="sampleData" required>{{ regex.sample_data }}</textarea>
+                        <label for="sampleData" class="required-field">Sample Data</label>
+                        <div class="invalid-feedback">
+                            Please enter sample data.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sample Output Field -->
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="sampleOutput" name="sampleOutput" value="{{ regex.sample_output }}" required>
+                        <label for="sampleOutput" class="required-field">Sample Output</label>
+                        <div class="invalid-feedback">
+                            Please enter sample output.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Column Mapped Field -->
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="emailColumnMapped" name="emailColumnMapped" value="{{ regex.email_column_mapped }}" required>
+                        <label for="emailColumnMapped" class="required-field">Email Column Mapped</label>
+                        <div class="invalid-feedback">
+                            Please enter the email column mapped.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Field -->
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="regexStatus" name="regexStatus" value="{{ regex.status }}" required pattern="[01]">
+                        <label for="regexStatus" class="required-field">Status</label>
+                        <div class="invalid-feedback">
+                            Please enter 0 or 1 for status.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="col-12 mt-4">
+                    <button type="submit" class="btn btn-primary submit-btn w-100">
+                        Update Parser Regex
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

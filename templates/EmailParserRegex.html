@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}
+    All Email Parser Regex
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-5" style="overflow-x: auto; width: 100vw;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="page-title">All Email Parser Regexes</h2>
+            <a href="/createemailparserregex" class="btn btn-primary">Create Email Parser Regex</a>
+        </div>
+
+        <div class="table-container bg-white">
+            <!-- Add a CSS class to make the table wider -->
+            <div class="table-responsive" style="overflow-x: auto; width: 100%;">
+                <table class="table table-hover table-striped mb-0" style="min-width: 1200px;">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Id</th>
+                            <th>Email Parser Id</th>
+                            <th>Regex</th>
+                            <th>Sample Data</th>
+                            <th>Sample Output</th>
+                            <th>Email Column Mapped</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lead in leads %}
+                            <tr>
+                                <td>{{ lead.id }}</td>
+                                <td>{{ lead.email_parser_id }}</td>
+                                <td>{{ lead.regex }}</td>
+                                <td>{{ lead.sample_data }}</td>
+                                <td>{{ lead.sample_output }}</td>
+                                <td>{{ lead.email_column_mapped }}</td>
+                                <td><a href="{{ url_for('update_email_parser_regex', email_parser_regex_id=lead.id) }}" class="email-id"><i class="fas fa-edit me-1"></i>Update</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

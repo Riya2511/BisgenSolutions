@@ -18,7 +18,6 @@
             background: white;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            
             width: 100%;
             padding: 2rem;
         }
@@ -71,85 +70,82 @@
         }
         
         .overflow-container {
-           
-            
             padding-right: 1rem;
         }
     </style>
 </head>
 <body>
     <div class="container d-flex justify-content-between align-items-center mb-4 mt-5">
-    <div class="info-card">
-        <h4 class="card-title">Email Details</h4>
-        <div class="overflow-container">
-            <div class="info-row">
-                <div class="info-label">Account Email Filters ID</div>
-                <div class="info-value">507</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Account ID</div>
-                <div class="info-value">1</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Created At</div>
-                <div class="info-value">2024-10-15 10:57:31</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">ID</div>
-                <div class="info-value">1</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">IMAP Message ID</div>
-                <div class="info-value code">&lt;AOfIjz43TOGvKy4ZNNdg1g@geopod-ismtpd-canary-0&gt;</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">IMAP From</div>
-                <div class="info-value">IndiaMART &lt;buyleads@indiamart.com&gt;</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">IMAP Subject</div>
-                <div class="info-value">Buyer Details for "1 Gram Silica Gel Pouch."</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">IMAP Headers</div>
-                <div class="info-value text-muted">[Empty]</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">IMAP Body</div>
-                <div class="info-value text-muted">[NULL]</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Mail Parsing Status</div>
-                <div class="info-value">PROCESSED</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Mail Regex Applied</div>
-                <div class="info-value code" style="font-size: 0.8rem;">
-                    [Multiple regex patterns applied - Click to expand]
+        <div class="info-card">
+            <h4 class="card-title">Email Details</h4>
+            <div class="overflow-container">
+                <div class="info-row">
+                    <div class="info-label">ID</div>
+                    <div class="info-value">{{leads.id}}</div>
                 </div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Mail Regex Output</div>
-                <div class="info-value code" style="font-size: 0.8rem;">
-                    mailto:buyleads@indiamart.com
-                    Jyotee Sharma, Gurugram, HR
-                    Business Use
-                    Member Since: 7 months
+                <div class="info-row">
+                    <div class="info-label">Account ID</div>
+                    <div class="info-value">{{leads.account_id}}</div>
                 </div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Status</div>
-                <div class="info-value">
-                    <span class="status-badge status-parsing-done">PARSING_DONE</span>
+                <div class="info-row">
+                    <div class="info-label">Account Email Filters ID</div>
+                    <div class="info-value">{{leads.account_email_filters_id}}</div>
                 </div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Updated At</div>
-                <div class="info-value">2024-11-16 15:52:53</div>
+                <div class="info-row">
+                    <div class="info-label">IMAP Message ID</div>
+                    <div class="info-value code">
+                        {{leads.imap_message_id}}
+                    </div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">IMAP From</div>
+                    <div class="info-value">{{leads.imap_from}}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">IMAP Subject</div>
+                    <div class="info-value">{{leads.imap_subject}}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">IMAP Headers</div>
+                    <div class="info-value text-muted">{{leads.imap_headers}}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Status</div>
+                    <div class="info-value">
+                        <span class="status-badge status-parsing-done">{{leads.status}}</span>
+                    </div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">IMAP Created Date</div>
+                    <div class="info-value">{{leads.imap_created_date}}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Mail Regex Applied</div>
+                    <div class="info-value code" style="font-size: 0.8rem;">
+                        {{leads.mail_regex_applied}}
+                    </div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Mail Regex Output</div>
+                    <div class="info-value code" style="font-size: 0.8rem;">
+                        {{leads.mail_regex_output}}
+                    </div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Mail Parsing Status</div>
+                    <div class="info-value">{{leads.mail_parsing_status}}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Created At</div>
+                    <div class="info-value">{{leads.created_at}}</div>
+                </div>
+                <div class="info-row">
+                    <div class="info-label">Updated At</div>
+                    <div class="info-value">{{leads.updated_at}}</div>
+                </div>
             </div>
         </div>
     </div>
-</div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

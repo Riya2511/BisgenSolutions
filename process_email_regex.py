@@ -218,7 +218,7 @@ def update_email_regex_results(email_id: int, regex_results: List[Tuple], accoun
                 'status': status
             })
             if output and column_mapping:
-                if 'name' in column_mapping:
+                if 'name_buyer' in column_mapping:
                     lead_updates['name'] = parsing_name(output)
                 elif 'buyer_since_instant' in column_mapping:
                     lead_updates['mail_buyer_since'] = output
@@ -235,26 +235,25 @@ def update_email_regex_results(email_id: int, regex_results: List[Tuple], accoun
                 elif 'location_instant' in column_mapping:
                     lead_updates['requirement'], lead_updates['mail_buyer_location'] = parse_location_instant(output)
                     lead_updates['mail_requirement'] = lead_updates['requirement']
-                elif 'email' in column_mapping:
+                elif 'email_buyer' in column_mapping:
                     lead_updates['email'] = parsing_email(output)
-                elif 'quantity' in column_mapping:
+                elif 'quantity_buyer' in column_mapping:
                     lead_updates['mail_quantity'] = parse_table_data(output)
                     lead_updates['qty'] = extract_number(parse_table_data(output))
-                elif 'requirement' in column_mapping:
+                elif 'requirement_buyer' in column_mapping:
                     lead_updates['mail_requirement'] = parse_table_data(output)
-                elif 'order_value' in column_mapping:
+                elif 'order_value_buyer' in column_mapping:
                     lead_updates['mail_order_value'] = parse_table_data(output)
-                elif 'usage' in column_mapping:
+                elif 'usage_buyer' in column_mapping:
                     lead_updates['mail_usage'] = parse_table_data(output)
-                elif 'buyer_since' in column_mapping:
+                elif 'buyer_since_buyer' in column_mapping:
                     lead_updates['mail_buyer_since'] = parsing_member_since(output)
-                elif 'location' in column_mapping:
+                elif 'location_buyer' in column_mapping:
                     lead_updates['mail_buyer_location'] = parsing_name(output)
                 elif 'contact_instant' in column_mapping:
                     get_contact_details(output)
-                    import random
-                    lead_updates['name'] = random.randint(1000, 9999)
-                    lead_updates['email'] = random.randint(1000, 9999)
+                else:
+                    lead_updates[column_mapping] = output
 
         print(lead_updates)
 
