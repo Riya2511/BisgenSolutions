@@ -1,55 +1,140 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Fetcher</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 class="text-2xl font-semibold text-center mb-6 text-gray-700">Fetch Emails</h2>
-        {% with messages = get_flashed_messages() %}
-          {% if messages %}
-            <div class="mb-4 text-center text-sm text-green-600">
-              {% for message in messages %}
-                <p>{{ message }}</p>
-              {% endfor %}
-            </div>
-          {% endif %}
-        {% endwith %}
-        
+{% extends "base.html" %}
 
-        <form action="/" method="POST" class="space-y-4">
-            <div>
-                <label for="account" class="block text-gray-600 font-medium mb-2">Select Account</label>
-                <select id="account" name="account" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300">
-                    <option value="">Choose an Account</option>
-                    {% for account in accounts %}
-                        <option value="{{ account['id'] }}">{{ account['name'] }}</option>
-                    {% endfor %}
-                </select>
+{% block title %}
+    Email Fetcher
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="form-container">
+            <div class="form-header text-left pb-3">
+                <h3 class="mb-3">Fetch Emails</h3>
             </div>
 
-            <div>
-                <label for="rule" class="block text-gray-600 font-medium mb-2">Select Rule</label>
-                <select id="rule" name="rule" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300">
-                    <option value="">Choose a Rule</option>
-                    {% for rule in rules %}
-                        <option value="{{ rule['id'] }}">{{ rule['rule'] }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-success message-alert" role="alert">
+                        {% for message in messages %}
+                            <p class="mb-0">{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
 
-            <div>
-                <label for="since_date" class="block text-gray-600 font-medium mb-2">Since Date</label>
-                <input type="date" id="since_date" name="since_date" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300">
-            </div>
+            <form action="/" method="POST" novalidate>
+                <div class="row g-3">
+                    <!-- Select Account -->
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <select id="account" name="account" class="form-select" required>
+                                <option value="">Choose an Account</option>
+                                {% for account in accounts %}
+                                    <option value="{{ account['id'] }}">{{ account['name'] }}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="account" class="required-field">Select Account</label>
+                            <div class="invalid-feedback">
+                                Please choose an account.
+                            </div>
+                        </div>
+                    </div>
 
-            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 transition duration-200">
-                Fetch Emails
-            </button>
-        </form>
+                    <!-- Select Rule -->
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <select id="rule" name="rule" class="form-select" required>
+                                <option value="">Choose a Rule</option>
+                                {% for rule in rules %}
+                                    <option value="{{ rule['id'] }}">{{ rule['rule'] }}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="rule" class="required-field">Select Rule</label>
+                            <div class="invalid-feedback">
+                                Please choose a rule.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Since Date -->
+                <div class="form-floating mt-3">
+                    <input type="date" id="since_date" name="since_date" class="form-control" placeholder="Since Date" required>
+                    <label for="since_date" class="required-field">Since Date</label>
+                    <div class="invalid-feedback">
+                        Please enter a valid date.
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary submit-btn w-100">
+                        Fetch Emails
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-</body>
-</html>
+{% endblock %}
+
+{% block styles %}
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        .form-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .form-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .form-floating {
+            margin-bottom: 1.25rem;
+        }
+
+        .submit-btn {
+            padding: 0.8rem 2rem;
+            font-weight: 500;
+        }
+
+        .message-alert {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .row .col-md-6 {
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+    </style>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        // Form Validation
+        (() => {
+            'use strict';
+
+            const form = document.querySelector('form');
+            
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                form.classList.add('was-validated');
+            });
+        })();
+    </script>
+{% endblock %}

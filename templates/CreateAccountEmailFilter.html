@@ -1,195 +1,149 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Email Filter</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        
-        .form-container {
-            max-width: 700px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        }
-        
-        .form-header {
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #e9ecef;
-        }
-        
-        .form-floating {
-            margin-bottom: 1.25rem;
-        }
-        
-        .submit-btn {
-            padding: 0.8rem 2rem;
-            font-weight: 500;
-        }
-        
-        .required-field::after {
-            content: "*";
-            color: #dc3545;
-            margin-left: 4px;
-        }
+{% extends "base.html" %}
 
-        /* Small helper text style */
-        .helper-text {
-            font-size: 0.75rem;
-            color: #6c757d;
-            margin-top: 0.25rem;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="form-container">
-            <div class="form-header">
-                <h3 class="mb-0">Create Account Email Filter</h3>
-            </div>
+{% block title %}Create Email Filter{% endblock %}
 
-            <form id="createEmailFilterForm" novalidate>
-                <div class="row g-3">
-                    <!-- ID Field -->
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" id="filterId" placeholder="ID" required>
-                            <label for="filterId" class="required-field">ID</label>
-                            <div class="invalid-feedback">
-                                Please enter a valid ID.
-                            </div>
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <div class="form-header">
+            <h3 class="mb-3">Create Account Email Filter</h3>
+        </div>
+
+        <form id="createEmailFilterForm" novalidate>
+            <div class="row g-3">
+                <!-- ID Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="filterId" placeholder="ID" required>
+                        <label for="filterId" class="required-field">ID</label>
+                        <div class="invalid-feedback">
+                            Please enter a valid ID.
                         </div>
-                    </div>
-
-                    <!-- Rule Field -->
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" id="filterRule" placeholder="Rule" required>
-                            <label for="filterRule" class="required-field">Rule</label>
-                            <div class="invalid-feedback">
-                                Please enter a valid rule.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Filters on Subject Field -->
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" id="filtersOnSubject" placeholder="Filters on Subject" required>
-                            <label for="filtersOnSubject" class="required-field">Filters on Subject</label>
-                            <div class="invalid-feedback">
-                                Please enter filters for the subject.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Filters on From Field -->
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" id="filtersOnFrom" placeholder="Filters on From" required>
-                            <label for="filtersOnFrom" class="required-field">Filters on From</label>
-                            <div class="invalid-feedback">
-                                Please enter filters for the sender.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Filters on Body Field -->
-                    <div class="col-md-12">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" id="filtersOnBody" placeholder="Filters on Body" required>
-                            <label for="filtersOnBody" class="required-field">Filters on Body</label>
-                            <div class="invalid-feedback">
-                                Please enter filters for the email body.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Account ID Field -->
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" id="accountId" placeholder="Account ID" required>
-                            <label for="accountId" class="required-field">Account ID</label>
-                            <div class="invalid-feedback">
-                                Please enter a valid Account ID.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Email Parser ID Field -->
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" id="emailParserId" placeholder="Email Parser ID" required>
-                            <label for="emailParserId" class="required-field">Email Parser ID</label>
-                            <div class="invalid-feedback">
-                                Please enter a valid Email Parser ID.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Email Key Column Field -->
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" id="emailKeyColumn" placeholder="Email Key Column" required>
-                            <label for="emailKeyColumn" class="required-field">Email Key Column</label>
-                            <div class="invalid-feedback">
-                                Please enter a valid Email Key Column.
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Status Field -->
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" id="filterStatus" placeholder="Status" required pattern="[01]">
-                            <label for="filterStatus" class="required-field">Status</label>
-                            <div class="invalid-feedback">
-                                Please enter 0 or 1 for status.
-                            </div>
-                            <div class="helper-text">Enter 1 for active, 0 for inactive</div>
-                        </div>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="col-12 mt-4">
-                        <button type="submit" class="btn btn-primary submit-btn w-100">
-                            Create Filter
-                        </button>
                     </div>
                 </div>
-            </form>
-        </div>
+
+                <!-- Rule Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="filterRule" placeholder="Rule" required>
+                        <label for="filterRule" class="required-field">Rule</label>
+                        <div class="invalid-feedback">
+                            Please enter a valid rule.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters on Subject Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="filtersOnSubject" placeholder="Filters on Subject" required>
+                        <label for="filtersOnSubject" class="required-field">Filters on Subject</label>
+                        <div class="invalid-feedback">
+                            Please enter filters for the subject.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters on From Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="filtersOnFrom" placeholder="Filters on From" required>
+                        <label for="filtersOnFrom" class="required-field">Filters on From</label>
+                        <div class="invalid-feedback">
+                            Please enter filters for the sender.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters on Body Field -->
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="filtersOnBody" placeholder="Filters on Body" required>
+                        <label for="filtersOnBody" class="required-field">Filters on Body</label>
+                        <div class="invalid-feedback">
+                            Please enter filters for the email body.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account ID Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="accountId" placeholder="Account ID" required>
+                        <label for="accountId" class="required-field">Account ID</label>
+                        <div class="invalid-feedback">
+                            Please enter a valid Account ID.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Parser ID Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="emailParserId" placeholder="Email Parser ID" required>
+                        <label for="emailParserId" class="required-field">Email Parser ID</label>
+                        <div class="invalid-feedback">
+                            Please enter a valid Email Parser ID.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Key Column Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="emailKeyColumn" placeholder="Email Key Column" required>
+                        <label for="emailKeyColumn" class="required-field">Email Key Column</label>
+                        <div class="invalid-feedback">
+                            Please enter a valid Email Key Column.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Status Field -->
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="filterStatus" placeholder="Status" required pattern="[01]">
+                        <label for="filterStatus" class="required-field">Status</label>
+                        <div class="invalid-feedback">
+                            Please enter 0 or 1 for status.
+                        </div>
+                        <div class="helper-text">Enter 1 for active, 0 for inactive</div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="col-12 mt-4">
+                    <button type="submit" class="btn btn-primary submit-btn w-100">
+                        Create Filter
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
+</div>
+{% endblock %}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Form Validation
-        (() => {
-            'use strict';
+{% block scripts %}
+<script>
+    // Form Validation
+    (() => {
+        'use strict';
 
-            const form = document.getElementById('createEmailFilterForm');
-            
-            form.addEventListener('submit', event => {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                } else {
-                    // Here you would typically handle the form submission
-                    event.preventDefault();
-                    const formData = new FormData(form);
-                    console.log('Form submitted:', Object.fromEntries(formData));
-                }
+        const form = document.getElementById('createEmailFilterForm');
+        
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            } else {
+                // Here you would typically handle the form submission
+                event.preventDefault();
+                const formData = new FormData(form);
+                console.log('Form submitted:', Object.fromEntries(formData));
+            }
 
-                form.classList.add('was-validated');
-            });
-        })();
-    </script>
-</body>
-</html>
+            form.classList.add('was-validated');
+        });
+    })();
+</script>
+{% endblock %}

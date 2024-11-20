@@ -219,7 +219,7 @@ def update_email_regex_results(email_id: int, regex_results: List[Tuple], accoun
             })
             if output and column_mapping:
                 if 'name' in column_mapping:
-                    lead_updates['name'] = output.replace('\\r', '').replace('\\n', '').replace('\\', '').replace('&nbsp;', ' ').strip()
+                    lead_updates['name'] = parsing_name(output)
                 elif 'buyer_since_instant' in column_mapping:
                     lead_updates['mail_buyer_since'] = output
                 elif 'quantity_instant' in column_mapping:
