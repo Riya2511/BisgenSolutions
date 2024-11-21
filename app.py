@@ -1,10 +1,14 @@
-from flask import Flask, abort, flash, redirect, render_template, request, url_for, make_response, session
-import json
 import datetime
-from security.authToken import AuthToken
-from config import FLASK_SECRET_KEY, BATCH_SIZE
+import json
+
+from flask import (Flask, abort, flash, make_response, redirect,
+                   render_template, request, session, url_for)
+
+from config import BATCH_SIZE, FLASK_SECRET_KEY
 from helper import connect_to_sql
-from security.authenticationValidation import auth_required, allowed_user_type, is_authenticated
+from security.authenticationValidation import (allowed_user_type,
+                                               auth_required, is_authenticated)
+from security.authToken import AuthToken
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = FLASK_SECRET_KEY
@@ -24,7 +28,7 @@ def sign_in():
         leads_data = None
         if not conn:
             flash("Failed to connect to the database.")
-            return render_template("leads.html", leads=[])
+            return redirect('/signin')
         try:
             cursor = conn.cursor(dictionary=True)
             query = "SELECT * FROM users WHERE email = %s AND password = %s"
