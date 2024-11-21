@@ -48,25 +48,6 @@ def sign_in():
             return response
     return render_template("SignIn.html")
 
-@app.route("/leads", methods=["GET"])
-@auth_required()
-def leads(**kwargs):
-    conn = connect_to_sql()
-    if not conn:
-        flash("Failed to connect to the database.")
-        return render_template("Emails.html", leads=[])
-    try:
-        cursor = conn.cursor(dictionary=True)
-        query = """
-        SELECT * from leads where status = 1 and account_id = %s
-        """
-        cursor.execute(query, (kwargs['current_user']['account_id'],))
-        leads_data = cursor.fetchall()
-    finally:
-        cursor.close()
-        conn.close()
-    return render_template("Leads.html", leads=leads_data)
-
 @app.route("/users", methods=["GET"])
 @allowed_user_type(['admin'])
 def users(**kwargs):
@@ -105,6 +86,32 @@ def accounts(**kwargs):
         conn.close()
     return render_template("Accounts.html", leads=leads_data)
 
+@app.route("/leads", methods=["GET"])
+@auth_required()
+def leads(**kwargs):
+    conn = connect_to_sql()
+    if not conn:
+        flash("Failed to connect to the database.")
+        return render_template("Emails.html", leads=[])
+    try:
+        cursor = conn.cursor(dictionary=True)
+        if is_authenticated()['user_type'] == 'user':
+            query = """
+            SELECT * from leads where status = 1 and account_id = %s
+            """
+            cursor.execute(query, (kwargs['current_user']['account_id'],))
+        elif is_authenticated()['user_type'] == 'admin':
+            query = """
+            SELECT * from leads where status = 1
+            """
+            cursor.execute(query)
+        leads_data = cursor.fetchall()
+        leads_data.reverse()
+    finally:
+        cursor.close()
+        conn.close()
+    return render_template("Leads.html", leads=leads_data)
+
 @app.route("/emails", methods=["GET"])
 @auth_required()
 def emails(**kwargs):
@@ -114,10 +121,16 @@ def emails(**kwargs):
         return render_template("Emails.html", leads=[])
     try:
         cursor = conn.cursor(dictionary=True)
-        query = """
-        SELECT * from email where account_id = %s
-        """
-        cursor.execute(query, (kwargs['current_user']['account_id'],))
+        if is_authenticated()['user_type'] == "user":
+            query = """
+            SELECT * from email where account_id = %s
+            """
+            cursor.execute(query, (kwargs['current_user']['account_id'],))
+        elif is_authenticated()['user_type'] == "admin":
+            query = """
+            SELECT * from email
+            """
+            cursor.execute(query)
         leads_data = cursor.fetchall()
     finally:
         cursor.close()
@@ -133,10 +146,16 @@ def account_email_filters(**kwargs):
         return render_template("AccountEmailFilters.html", leads=[])
     try:
         cursor = conn.cursor(dictionary=True)
-        query = """
-        SELECT * from account_email_filters where status = 1 and account_id = %s
-        """
-        cursor.execute(query, (kwargs['current_user']['account_id'],))
+        if is_authenticated()['user_type'] == "user":
+            query = """
+            SELECT * from account_email_filters where status = 1 and account_id = %s
+            """
+            cursor.execute(query, (kwargs['current_user']['account_id'],))
+        elif is_authenticated()['user_type'] == "admin":
+            query = """
+            SELECT * from account_email_filters where status = 1
+            """
+            cursor.execute(query)
         leads_data = cursor.fetchall()
     finally:
         cursor.close()
@@ -303,13 +322,10 @@ def update_user(user_id, **kwargs):
     conn = connect_to_sql()
     if not conn:
         flash("Failed to connect to the database.", "danger")
-        return redirect(url_for('some_error_page'))  # Redirect to an error page if DB connection fails
-
+        return redirect(url_for('users'))
     try:
         cursor = conn.cursor(dictionary=True)
-        
         if request.method == "GET":
-            # Fetch the current user data from the database
             query = """
             SELECT account_id, name, email, phone, password, user_type, status
             FROM users
@@ -318,14 +334,11 @@ def update_user(user_id, **kwargs):
             cursor.execute(query, (user_id,))
             user = cursor.fetchone()
             if user:
-                # Render the form with the current user data
                 return render_template("UpdateUser.html", user=user)
             else:
                 flash("User not found.", "danger")
-                return redirect(url_for('some_error_page'))
-
+                return redirect(url_for('users'))
         elif request.method == "POST":
-            # Collect updated form data
             account_id = request.form['accountId']
             user_name = request.form['userName']
             user_email = request.form['userEmail']
@@ -333,15 +346,10 @@ def update_user(user_id, **kwargs):
             user_password = request.form['userPassword']
             user_type = request.form['userType']
             user_status = request.form['userStatus']
-
-            # Hash password if changed
             if user_password:
                 hashed_password = user_password
             else:
-                # If password is not provided, keep the old password
                 hashed_password = user['password']
-
-            # Update user details in the database
             update_query = """
             UPDATE users
             SET account_id = %s, name = %s, email = %s, phone = %s, password = %s, user_type = %s, status = %s
@@ -349,13 +357,11 @@ def update_user(user_id, **kwargs):
             """
             cursor.execute(update_query, (account_id, user_name, user_email, user_phone, hashed_password, user_type, user_status, user_id))
             conn.commit()
-
             flash("User updated successfully.", "success")
-            return redirect(url_for('some_success_page'))  # Redirect after successful update
-
+            return redirect(url_for('users'))
     except Exception as e:
         flash(f"An error occurred: {str(e)}", "danger")
-        return redirect(url_for('users'))  # Redirect to error page on failure
+        return redirect(url_for('users')) 
     finally:
         cursor.close()
         conn.close()
@@ -364,15 +370,12 @@ def update_user(user_id, **kwargs):
 @allowed_user_type(['admin'])
 def create_account(**kwargs):
     if request.method == "POST":
-        # Collect form data
         account_name = request.form['accountName']
         smtp_host = request.form['smtpHost']
         smtp_username = request.form['smtpUsername']
         smtp_password = request.form['smtpPassword']
         smtp_encryption = request.form['smtpEncryption']
         smtp_port = request.form['smtpPort']
-
-        # Insert data into the 'accounts' table
         try:
             conn = connect_to_sql()
 
@@ -386,12 +389,10 @@ def create_account(**kwargs):
             conn.commit()
 
             flash("Account created successfully!", "success")
-            return redirect(url_for('accounts'))  # Redirect to a success page
-
+            return redirect(url_for('accounts')) 
         except Exception as err:
             flash(f"Error: {err}", "danger")
-            return redirect(url_for('create_account'))  # Redirect back to the form in case of error
-
+            return redirect(url_for('create_account'))
         finally:
             cursor.close()
             conn.close()
@@ -403,7 +404,6 @@ def create_account(**kwargs):
 def update_account(account_id, **kwargs):
     conn = connect_to_sql()
     cursor = conn.cursor()
-
     if request.method == "GET":
         cursor.execute("SELECT * FROM accounts WHERE id = %s", (account_id,))
         account_data = cursor.fetchone()
@@ -420,8 +420,7 @@ def update_account(account_id, **kwargs):
             return render_template("UpdateAccount.html", account=account)
 
         flash("Account not found", "danger")
-        return redirect(url_for('some_error_page'))
-
+        return redirect(url_for('accounts'))
     elif request.method == "POST":
         account_name = request.form['accountName']
         smtp_host = request.form['smtpHost']
@@ -440,7 +439,7 @@ def update_account(account_id, **kwargs):
             conn.commit()
 
             flash("Account updated successfully!", "success")
-            return redirect(url_for('some_success_page')) 
+            return redirect(url_for('accounts')) 
 
         except Exception as err:
             flash(f"Error: {err}", "danger")
@@ -454,20 +453,19 @@ def update_account(account_id, **kwargs):
 @auth_required()
 def create_account_email_filters(**kwargs):
     if request.method == "POST":
-        rule = request.form['filterRule']
-        filters_on_subject = request.form['filtersOnSubject']
-        filters_on_from = request.form['filtersOnFrom']
-        filters_on_body = request.form['filtersOnBody']
-        account_id = request.form['accountId']
-        email_parser_id = request.form['emailParserId']
-        email_key_columns = request.form['emailKeyColumn']
-        status = request.form['filterStatus']
-
-        if not (rule and filters_on_subject and filters_on_from and filters_on_body and account_id and email_parser_id and email_key_columns and status):
-            flash("All fields are required.", "danger")
-            return redirect(url_for("create_account_email_filters"))
-
         try:
+            form_data = {
+                'rule': request.form.get('filterRule', ''),
+                'filters_on_subject': request.form.get('filtersOnSubject', ''),
+                'filters_on_from': request.form.get('filtersOnFrom', ''),
+                'filters_on_body': request.form.get('filtersOnBody', ''),
+                'account_id': request.form.get('accountId', ''),
+                'email_parser_id': request.form.get('emailParserId', ''),
+                'status': request.form.get('filterStatus', '')
+            }
+            if not all(form_data.values()):
+                flash("All fields are required.", "danger")
+                return redirect(url_for("create_account_email_filters"))
             conn = connect_to_sql()
             if not conn:
                 flash("Failed to connect to the database.", "danger")
@@ -475,20 +473,34 @@ def create_account_email_filters(**kwargs):
             
             cursor = conn.cursor()
             query = """
-            INSERT INTO account_email_filters (rule, filters_on_subject, filters_on_from, filters_on_body, account_id, email_parser_id, email_key_colums, status)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO account_email_filters 
+            (rule, filters_on_subject, filters_on_from, filters_on_body, 
+             account_id, email_parser_id, status)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
             """
-            cursor.execute(query, (rule, filters_on_subject, filters_on_from, filters_on_body, account_id, email_parser_id, email_key_columns, status))
+            
+            cursor.execute(query, (
+                form_data['rule'],
+                form_data['filters_on_subject'],
+                form_data['filters_on_from'],
+                form_data['filters_on_body'],
+                form_data['account_id'],
+                form_data['email_parser_id'],
+                form_data['status']
+            ))
+            
             conn.commit()
-
             cursor.close()
             conn.close()
+            
             flash("Email filter created successfully.", "success")
             return redirect(url_for("account_email_filters"))
 
         except Exception as e:
+            print(e)
             flash(f"An error occurred: {str(e)}", "danger")
             return redirect(url_for("create_account_email_filters"))
+            
     return render_template("CreateAccountEmailFilter.html")
 
 @app.route("/updateaccountemailfilters/<string:account_email_filters_id>", methods=["GET", "POST"])
@@ -729,14 +741,11 @@ def create_email_parser(**kwargs):
         parsing_name = form_data.get("parsingName")
         email_source_id = form_data.get("emailSourceId")
         status = form_data.get("parserStatus")
-
-        # Validate inputs
         if not parsing_name or not email_source_id or status not in ["0", "1"]:
             flash("Invalid input data. Please check your entries.", "danger")
             return redirect(url_for("create_email_parser"))
 
         try:
-            # Database insertion logic
             with connect_to_sql() as connection:
                 cursor = connection.cursor()
                 insert_query = """
@@ -761,7 +770,7 @@ def update_email_parser(email_parser_id, **kwargs):
     conn = connect_to_sql()
     if not conn:
         flash("Failed to connect to the database.", "danger")
-        return redirect(url_for('email_parser'))  # Ensure this route is correct
+        return redirect(url_for('email_parser')) 
     try:
         cursor = conn.cursor(dictionary=True)
         if request.method == "GET":
@@ -776,7 +785,7 @@ def update_email_parser(email_parser_id, **kwargs):
                 return render_template("UpdateEmailParser.html", parser=email_source)
             else:
                 flash("Email source not found.", "danger")
-                return redirect(url_for('email_parser'))  # Ensure this route is correct
+                return redirect(url_for('email_parser'))
         
         elif request.method == "POST":
             parsingName = request.form['parsingName']
@@ -792,11 +801,11 @@ def update_email_parser(email_parser_id, **kwargs):
             conn.commit()
 
             flash("Email source updated successfully.", "success")
-            return redirect(url_for('email_parser'))  # Correct the redirect route
+            return redirect(url_for('email_parser')) 
 
     except Exception as e:
         flash(f"An error occurred: {str(e)}", "danger")
-        return redirect(url_for('email_parser'))  # Ensure this route is correct
+        return redirect(url_for('email_parser')) 
 
     finally:
         cursor.close()
@@ -822,12 +831,12 @@ def create_email_fetch_queue(**kwargs):
         since_date = request.form.get("since_date")
         if not account_id or not rule_id:
             flash("Please select both account and rule.")
-            return redirect(url_for("index"))
+            return redirect(url_for("create_email_fetch_queue"))
         try:
             since_date = datetime.datetime.strptime(since_date, "%Y-%m-%d").date()
         except ValueError:
             flash("Invalid date format. Please use YYYY-MM-DD.")
-            return redirect(url_for("index"))
+            return redirect(url_for("create_email_fetch_queue"))
         conn = connect_to_sql()
         if not conn:
             return

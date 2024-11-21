@@ -11,6 +11,37 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+def extract_name(text):
+    match = re.search(r'Name:\s*([^\r\n]+)', text, re.IGNORECASE)
+    if match:
+        return match.group(1).strip().title()[:match.group(1).strip().title().index('\\R')]
+    return None
+
+def extract_email(text):
+    email_patterns = [
+        r'<mailto:([^>\r\n]+)',  # Match email within mailto: and angle brackets
+        r'mailto:([^\r\n<]+)',   # Match email after mailto:
+        r'([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})'  # Standard email regex
+    ]
+    for pattern in email_patterns:
+        match = re.search(pattern, text)
+        if match:
+            return match.group(1).strip()[:match.group(1).strip().index('\\r')]
+    return None
+
+def extract_phone(text):
+    match = re.search(r'Phone:\s*([+\d\s-]+)', text)
+    if match:
+        return re.sub(r'\s', '', match.group(1))
+    return None
+
+def extract_qualification(text):
+    match = re.search(r'Qualification:\s*([^\r\n]+)', text, re.IGNORECASE)
+    if match:
+        return match.group(1).strip().upper()[:match.group(1).strip().upper().index('\\R')]
+    
+    return None
+
 def extract_number(text):
     if not text:
         return None
@@ -252,6 +283,14 @@ def update_email_regex_results(email_id: int, regex_results: List[Tuple], accoun
                     lead_updates['mail_buyer_location'] = parsing_name(output)
                 elif 'contact_instant' in column_mapping:
                     get_contact_details(output)
+                elif 'name' in column_mapping:
+                    lead_updates['name'] = extract_name(output)
+                elif 'email' in column_mapping:
+                    lead_updates['email'] = extract_email(output)
+                elif 'phone' in column_mapping:
+                    lead_updates['phone'] = extract_phone(output)
+                elif 'qualification' in column_mapping:
+                    lead_updates['qualification'] = extract_qualification(output)
                 else:
                     lead_updates[column_mapping] = output
 
@@ -356,10 +395,9 @@ def main():
         
         # Apply all regex patterns to the email body
         regex_results = process_email_regex(email_id, imap_body, regex_patterns, column_mappings)
-        print(regex_results)
         # Update the database with all results
-        # for regex_result in regex_results:
-        #     update_email_regex_results(email_id, regex_result, account_id)
+        for regex_result in regex_results:
+            update_email_regex_results(email_id, regex_result, account_id)
         
         # Log processing summary
         for regex_result in regex_results:

@@ -8,7 +8,7 @@ SQL_CONFIG = {
 
 BATCH_SIZE = 50  # Number of emails to fetch in each batch
 CRON_INTERVAL = 5  # Interval in seconds
-EMAIL_PROCESS_BATCH_SIZE = 1
+EMAIL_PROCESS_BATCH_SIZE = 10
 
 # JWT CONFIG 
 JWT_SECRET_KEY = "H9f$mK2#pL5vR8nX@jQ4wC7yT0bN3gA6*sE1iD9uZ"

@@ -9,13 +9,12 @@
             <h3 class="mb-3">Create Account Email Filter</h3>
         </div>
 
-        <form method="POST" id="createEmailFilterForm" novalidate>
+        <form method="POST" action="{{ url_for('create_account_email_filters') }}" id="createEmailFilterForm" novalidate>
             <div class="row g-3">
-
                 <!-- Rule Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="filterRule" placeholder="Rule" required>
+                        <input type="text" class="form-control" id="filterRule" name="filterRule" placeholder="Rule" required>
                         <label for="filterRule" class="required-field">Rule</label>
                         <div class="invalid-feedback">
                             Please enter a valid rule.
@@ -26,7 +25,7 @@
                 <!-- Filters on Subject Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="filtersOnSubject" placeholder="Filters on Subject" required>
+                        <input type="text" class="form-control" id="filtersOnSubject" name="filtersOnSubject" placeholder="Filters on Subject" required>
                         <label for="filtersOnSubject" class="required-field">Filters on Subject</label>
                         <div class="invalid-feedback">
                             Please enter filters for the subject.
@@ -37,7 +36,7 @@
                 <!-- Filters on From Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="filtersOnFrom" placeholder="Filters on From" required>
+                        <input type="text" class="form-control" id="filtersOnFrom" name="filtersOnFrom" placeholder="Filters on From" required>
                         <label for="filtersOnFrom" class="required-field">Filters on From</label>
                         <div class="invalid-feedback">
                             Please enter filters for the sender.
@@ -48,7 +47,7 @@
                 <!-- Filters on Body Field -->
                 <div class="col-md-12">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="filtersOnBody" placeholder="Filters on Body" required>
+                        <input type="text" class="form-control" id="filtersOnBody" name="filtersOnBody" placeholder="Filters on Body" required>
                         <label for="filtersOnBody" class="required-field">Filters on Body</label>
                         <div class="invalid-feedback">
                             Please enter filters for the email body.
@@ -59,7 +58,7 @@
                 <!-- Account ID Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="accountId" placeholder="Account ID" required>
+                        <input type="text" class="form-control" id="accountId" name="accountId" placeholder="Account ID" required>
                         <label for="accountId" class="required-field">Account ID</label>
                         <div class="invalid-feedback">
                             Please enter a valid Account ID.
@@ -70,7 +69,7 @@
                 <!-- Email Parser ID Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="emailParserId" placeholder="Email Parser ID" required>
+                        <input type="text" class="form-control" id="emailParserId" name="emailParserId" placeholder="Email Parser ID" required>
                         <label for="emailParserId" class="required-field">Email Parser ID</label>
                         <div class="invalid-feedback">
                             Please enter a valid Email Parser ID.
@@ -78,26 +77,18 @@
                     </div>
                 </div>
 
-                <!-- Email Key Column Field -->
-                <div class="col-md-6">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="emailKeyColumn" placeholder="Email Key Column" required>
-                        <label for="emailKeyColumn" class="required-field">Email Key Column</label>
-                        <div class="invalid-feedback">
-                            Please enter a valid Email Key Column.
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Status Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="filterStatus" placeholder="Status" required pattern="[01]">
+                        <select class="form-select" id="filterStatus" name="filterStatus" required>
+                            <option value="">Select status</option>
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
                         <label for="filterStatus" class="required-field">Status</label>
                         <div class="invalid-feedback">
-                            Please enter 0 or 1 for status.
+                            Please select a status.
                         </div>
-                        <div class="helper-text">Enter 1 for active, 0 for inactive</div>
                     </div>
                 </div>
 
@@ -121,17 +112,11 @@
 
         const form = document.getElementById('createEmailFilterForm');
         
-        form.addEventListener('submit', event => {
+        form.addEventListener('submit', function(event) {
             if (!form.checkValidity()) {
                 event.preventDefault();
                 event.stopPropagation();
-            } else {
-                // Here you would typically handle the form submission
-                event.preventDefault();
-                const formData = new FormData(form);
-                console.log('Form submitted:', Object.fromEntries(formData));
             }
-
             form.classList.add('was-validated');
         });
     })();
