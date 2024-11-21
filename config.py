@@ -1,16 +1,16 @@
 SQL_CONFIG = {
     "host": "localhost",
     "port": 3306,
-    "user": "root",
+    "user": "webapp",
     "password": "Qwerty@123",
-    "database": "test",
+    "database": "bisgenSolutions",
 }
 
 BATCH_SIZE = 50  # Number of emails to fetch in each batch
 CRON_INTERVAL = 5  # Interval in seconds
 EMAIL_PROCESS_BATCH_SIZE = 10
 
-# JWT CONFIG 
+# JWT CONFIG
 JWT_SECRET_KEY = "H9f$mK2#pL5vR8nX@jQ4wC7yT0bN3gA6*sE1iD9uZ"
 JWT_ALGORITHM = "HS256"
 
