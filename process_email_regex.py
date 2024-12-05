@@ -32,7 +32,7 @@ def extract_email(text):
     for pattern in email_patterns:
         match = re.search(pattern, text)
         if match:
-            return match.group(1).strip()[: match.group(1).strip().index("\\r")]
+            return (match.group(1).strip()[: match.group(1).strip().index("\\r")]).replace('>', '')
     return None
 
 

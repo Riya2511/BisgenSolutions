@@ -1,155 +1,129 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lead Filter Details</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f5f5f5;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .info-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            
-            width: 100%;
-            padding: 2rem;
-        }
-        
-        .info-row {
-            display: flex;
-            border-bottom: 1px solid #eee;
-            padding: 0.75rem 0;
-        }
-        
-        .info-label {
-            flex: 0 0 200px;
-            font-weight: 600;
-            color: #555;
-            text-transform: capitalize;
-        }
-        
-        .info-value {
-            flex: 1;
-            color: #333;
-            word-break: break-word;
-        }
-        
-        .info-value.code {
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            background: #f8f9fa;
-            padding: 0.5rem;
-            border-radius: 4px;
-        }
-        
-        .card-title {
-            color: #2c3e50;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #e9ecef;
-        }
-    </style>
-</head>
-<body>
-    <div class="container d-flex justify-content-between align-items-center mb-4 mt-5">
-    <div class="info-card">
-        <h4 class="card-title">Lead Details</h4>
-        <div class="overflow-container">
-            <div class="info-row">
-                <div class="info-label">Id</div>
-                <div class="info-value">{{leads.id}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Name</div>
-                <div class="info-value">{{leads.name}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Email</div>
-                <div class="info-value">{{leads.email}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Phone</div>
-                <div class="info-value">{{leads.phone}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Qualification</div>
-                <div class="info-value">{{leads.qualification}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Quantity</div>
-                <div class="info-value">{{leads.qty}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Reasons</div>
-                <div class="info-value">{{leads.reasons}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Requirement</div>
-                <div class="info-value">{{leads.requirement}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Mail Quantity</div>
-                <div class="info-value">{{leads.mail_quantity}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Mail Requirement</div>
-                <div class="info-value">{{leads.mail_requirement}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Mail Order Value</div>
-                <div class="info-value">{{leads.mail_order_value}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Mail Why</div>
-                <div class="info-value">{{leads.mail_why}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Mail Usage</div>
-                <div class="info-value">{{leads.mail_usage}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Mail Buyer Since</div>
-                <div class="info-value">{{leads.mail_buyer_since}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Mail Buyer Type</div>
-                <div class="info-value">{{leads.mail_buyer_type}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Mail Buyer Location</div>
-                <div class="info-value">{{leads.mail_buyer_location}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Email ID</div>
-                <div class="info-value">{{leads.email_id}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Account ID</div>
-                <div class="info-value">{{leads.account_id}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Status</div>
-                <div class="info-value">{{leads.status}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Created By</div>
-                <div class="info-value">{{leads.created_by}}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Updated By</div>
-                <div class="info-value">{{leads.updated_by}}</div>
+{% extends "base.html" %}
+
+{% block title %}
+    Lead Filter Details
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-16">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Lead Details</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr>
+                                    <th>ID</th>
+                                    <td>{{ leads.id }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Name</th>
+                                    <td>{{ leads.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email</th>
+                                    <td>{{ leads.email }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Phone</th>
+                                    <td>{{ leads.phone }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Qualification</th>
+                                    <td>{{ leads.qualification }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Quantity</th>
+                                    <td>{{ leads.qty }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Reasons</th>
+                                    <td>{{ leads.reasons }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Requirement</th>
+                                    <td>{{ leads.requirement }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Mail Quantity</th>
+                                    <td>{{ leads.mail_quantity }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Mail Requirement</th>
+                                    <td>{{ leads.mail_requirement }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Mail Order Value</th>
+                                    <td>{{ leads.mail_order_value }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Mail Why</th>
+                                    <td>{{ leads.mail_why }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Mail Usage</th>
+                                    <td>{{ leads.mail_usage }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Mail Buyer Since</th>
+                                    <td>{{ leads.mail_buyer_since }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Mail Buyer Type</th>
+                                    <td>{{ leads.mail_buyer_type }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Mail Buyer Location</th>
+                                    <td>{{ leads.mail_buyer_location }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email ID</th>
+                                    <td>{{ leads.email_id }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Account ID</th>
+                                    <td>{{ leads.account_id }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td>
+                                        <span>{{ leads.status }}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Created By</th>
+                                    <td>{{ leads.created_by }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Updated By</th>
+                                    <td>{{ leads.updated_by }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{% endblock %}
+
+{% block extra_styles %}
+<style>
+    body {
+        background-color: #f4f6f9;
+    }
+    .table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #495057;
+    }
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(0,0,0,.05);
+    }
+</style>
+{% endblock %}

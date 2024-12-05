@@ -1,8 +1,8 @@
 SQL_CONFIG = {
     "host": "localhost",
     "port": 3306,
-    "user": "webapp",
-    "password": "Qwerty@123",
+    "user": "root",
+    "password": "123",
     "database": "bisgenSolutions",
 }
 

@@ -71,47 +71,57 @@
 </head>
 <body>
     {% block navbar %}
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <div class="navbar-container">
-                <a class="navbar-brand" href="/">Bisgen Solutions</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/leads">Leads</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/emails">Emails</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/users">Users</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/accounts">Accounts</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/accountemailfilters">Account Email Filters</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/emailsource">Email Source</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/emailparser">Email Parser</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/emailparserregex">Email Parser Regex</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/createemailfetchqueue">Create Email Fetch Job</a>
-                        </li>
-                    </ul>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <div class="navbar-container">
+                    <a class="navbar-brand" href="/">Bisgen Solutions</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-auto">
+                            
+                            
+                            <li class="nav-item">
+                                <a class="nav-link" href="/leads">Leads</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/emails">Emails</a>
+                            </li>
+                            {% if user_type == 'admin' %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/users">Users</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/accounts">Accounts</a>
+                                </li>
+                            {% endif %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/accountemailfilters">Account Email Filters</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/emailsource">Email Source</a>
+                            </li>
+                            {% if user_type == 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/emailparser">Email Parser</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/emailparserregex">Email Parser Regex</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/createemailfetchqueue">Create Email Fetch Job</a>
+                            </li>
+                            {% endif %}
+                            
+                            <li class="nav-item">
+                                <a class="nav-link" href="/signout">Sign Out</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-    </nav>
+        </nav>
     {% endblock %}
 
     <div class="container-fluid my-5 px-4">

@@ -13,6 +13,12 @@ from security.authToken import AuthToken
 app = Flask(__name__)
 app.config["SECRET_KEY"] = FLASK_SECRET_KEY
 
+@app.context_processor
+def inject_user_type():
+    if 'authToken' in session:
+        return dict(user_type=is_authenticated()['user_type'])
+    return dict(user_type=None)
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     if is_authenticated(): 
@@ -51,6 +57,13 @@ def sign_in():
             response = make_response(redirect("/leads"))
             return response
     return render_template("SignIn.html")
+
+@app.route('/signout', methods=["GET"])
+def sign_out():
+    if 'authToken' in session:
+        del session['authToken']
+    response = make_response(redirect("/"))
+    return response
 
 @app.route("/users", methods=["GET"])
 @allowed_user_type(['admin'])
@@ -186,7 +199,7 @@ def email_source(**kwargs):
     return render_template("EmailSource.html", leads=leads_data)
 
 @app.route("/emailparser", methods=["GET"])
-@auth_required()
+@allowed_user_type(['admin'])
 def email_parser(**kwargs):
     conn = connect_to_sql()
     if not conn:
@@ -205,7 +218,7 @@ def email_parser(**kwargs):
     return render_template("EmailParser.html", leads=leads_data)
 
 @app.route("/emailparserregex", methods=["GET"])
-@auth_required()
+@allowed_user_type(['admin'])
 def email_parser_regex(**kwargs):
     conn = connect_to_sql()
     if not conn:
@@ -646,7 +659,7 @@ def update_email_source(email_source_id, **kwargs):
         conn.close()
 
 @app.route("/createemailparserregex", methods=["GET", "POST"])
-@auth_required()
+@allowed_user_type(['admin'])
 def create_email_parser_regex(**kwargs):
     if request.method == "POST":
         form_data = request.form
@@ -683,7 +696,7 @@ def create_email_parser_regex(**kwargs):
     return render_template("CreateEmailParserRegex.html")
 
 @app.route("/updateemailparserregex/<string:email_parser_regex_id>", methods=["GET", "POST"])
-@auth_required()
+@allowed_user_type(['admin'])
 def update_email_parser_regex(email_parser_regex_id, **kwargs):
     conn = connect_to_sql()
     if not conn:
@@ -738,7 +751,7 @@ def update_email_parser_regex(email_parser_regex_id, **kwargs):
         conn.close()
 
 @app.route("/createemailparser", methods=["GET", "POST"])
-@auth_required()
+@allowed_user_type(['admin'])
 def create_email_parser(**kwargs):
     if request.method == "POST":
         form_data = request.form
@@ -769,7 +782,7 @@ def create_email_parser(**kwargs):
     return render_template("CreateEmailParser.html")
 
 @app.route("/updateemailparser/<string:email_parser_id>", methods=["GET", "POST"])
-@auth_required()
+@allowed_user_type(['admin'])
 def update_email_parser(email_parser_id, **kwargs):
     conn = connect_to_sql()
     if not conn:
@@ -816,7 +829,7 @@ def update_email_parser(email_parser_id, **kwargs):
         conn.close()
 
 @app.route("/createemailfetchqueue", methods=["GET", "POST"])
-@auth_required()
+@allowed_user_type(['admin'])
 def create_email_fetch_queue(**kwargs):
     conn = connect_to_sql()
     if not conn:

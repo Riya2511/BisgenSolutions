@@ -1,151 +1,97 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Filter Details</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f5f5f5;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .info-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            padding: 2rem;
-        }
-        
-        .info-row {
-            display: flex;
-            border-bottom: 1px solid #eee;
-            padding: 0.75rem 0;
-        }
-        
-        .info-label {
-            flex: 0 0 200px;
-            font-weight: 600;
-            color: #555;
-            text-transform: capitalize;
-        }
-        
-        .info-value {
-            flex: 1;
-            color: #333;
-            word-break: break-word;
-        }
-        
-        .info-value.code {
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            background: #f8f9fa;
-            padding: 0.5rem;
-            border-radius: 4px;
-        }
-        
-        .card-title {
-            color: #2c3e50;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #e9ecef;
-        }
-        
-        .status-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 50px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        
-        .status-parsing-done {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        
-        .overflow-container {
-            padding-right: 1rem;
-        }
-    </style>
-</head>
-<body>
-    <div class="container d-flex justify-content-between align-items-center mb-4 mt-5">
-        <div class="info-card">
-            <h4 class="card-title">Email Details</h4>
-            <div class="overflow-container">
-                <div class="info-row">
-                    <div class="info-label">ID</div>
-                    <div class="info-value">{{leads.id}}</div>
+{% extends "base.html" %}
+
+{% block title %}
+    Email Filter Details
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-16">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Email Details</h4>
                 </div>
-                <div class="info-row">
-                    <div class="info-label">Account ID</div>
-                    <div class="info-value">{{leads.account_id}}</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Account Email Filters ID</div>
-                    <div class="info-value">{{leads.account_email_filters_id}}</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">IMAP Message ID</div>
-                    <div class="info-value code">
-                        {{leads.imap_message_id}}
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr>
+                                    <th>ID</th>
+                                    <td>{{ leads.id }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Account ID</th>
+                                    <td>{{ leads.account_id }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Account Email Filters ID</th>
+                                    <td>{{ leads.account_email_filters_id }}</td>
+                                </tr>
+                                <tr>
+                                    <th>IMAP Message ID</th>
+                                    <td class="text-monospace">{{ leads.imap_message_id }}</td>
+                                </tr>
+                                <tr>
+                                    <th>IMAP From</th>
+                                    <td>{{ leads.imap_from }}</td>
+                                </tr>
+                                <tr>
+                                    <th>IMAP Subject</th>
+                                    <td>{{ leads.imap_subject }}</td>
+                                </tr>
+                                <tr>
+                                    <th>IMAP Headers</th>
+                                    <td>{{ leads.imap_headers }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td>
+                                        <span class="badge bg-success">{{ leads.status }}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>IMAP Created Date</th>
+                                    <td>{{ leads.imap_created_date }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Mail Regex Applied</th>
+                                    <td class="small text-muted">{{ leads.mail_regex_applied }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Mail Regex Output</th>
+                                    <td class="small text-muted">{{ leads.mail_regex_output }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Mail Parsing Status</th>
+                                    <td>{{ leads.mail_parsing_status }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Created At</th>
+                                    <td>{{ leads.created_at }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">IMAP From</div>
-                    <div class="info-value">{{leads.imap_from}}</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">IMAP Subject</div>
-                    <div class="info-value">{{leads.imap_subject}}</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">IMAP Headers</div>
-                    <div class="info-value text-muted">{{leads.imap_headers}}</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Status</div>
-                    <div class="info-value">
-                        <span class="status-badge status-parsing-done">{{leads.status}}</span>
-                    </div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">IMAP Created Date</div>
-                    <div class="info-value">{{leads.imap_created_date}}</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Mail Regex Applied</div>
-                    <div class="info-value code" style="font-size: 0.8rem;">
-                        {{leads.mail_regex_applied}}
-                    </div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Mail Regex Output</div>
-                    <div class="info-value code" style="font-size: 0.8rem;">
-                        {{leads.mail_regex_output}}
-                    </div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Mail Parsing Status</div>
-                    <div class="info-value">{{leads.mail_parsing_status}}</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Created At</div>
-                    <div class="info-value">{{leads.created_at}}</div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Updated At</div>
-                    <div class="info-value">{{leads.updated_at}}</div>
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+</div>
+{% endblock %}
+
+{% block extra_styles %}
+<style>
+    body {
+        background-color: #f4f6f9;
+    }
+    .table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #495057;
+    }
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: rgba(0,0,0,.05);
+    }
+</style>
+{% endblock %}
