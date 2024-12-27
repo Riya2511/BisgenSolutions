@@ -25,6 +25,10 @@ def index():
         return redirect('/leads')
     return redirect("/signin")
 
+@app.route("/error", methods=["GET"])
+def error():
+    return render_template("Error.html")
+
 @app.route("/signin", methods=["GET", "POST"])
 def sign_in():
     if request.method == "POST":
@@ -331,7 +335,24 @@ def create_user(**kwargs):
         except Exception as e:
             flash(f"An error occurred: {str(e)}", "danger")
             return redirect(url_for("create_user"))
-    return render_template("CreateUser.html")
+    try:
+        conn = connect_to_sql()
+        if not conn:
+            flash("Failed to connect to the database.", "danger")
+            return render_template("CreateUser.html", accounts=[])
+
+        cursor = conn.cursor()
+        # Fetch account id and name from the accounts table
+        accounts_query = "SELECT id, name FROM accounts"
+        cursor.execute(accounts_query)
+        accounts = cursor.fetchall()  # Returns a list of tuples (id, name)
+
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        flash(f"An error occurred while fetching accounts: {str(e)}", "danger")
+        accounts = []
+    return render_template("CreateUser.html", accounts=accounts)
 
 @app.route("/updateuser/<string:user_id>", methods=["GET", "POST"])
 @allowed_user_type(['admin'])
@@ -350,8 +371,13 @@ def update_user(user_id, **kwargs):
             """
             cursor.execute(query, (user_id,))
             user = cursor.fetchone()
-            if user:
-                return render_template("UpdateUser.html", user=user)
+            cursor1 = conn.cursor()
+            accounts_query = "SELECT id, name FROM accounts"
+            cursor1.execute(accounts_query)
+            accounts = cursor1.fetchall()  
+            cursor1.close()
+            if user and accounts:
+                return render_template("UpdateUser.html", user=user, accounts=accounts)
             else:
                 flash("User not found.", "danger")
                 return redirect(url_for('users'))
@@ -517,8 +543,27 @@ def create_account_email_filters(**kwargs):
             print(e)
             flash(f"An error occurred: {str(e)}", "danger")
             return redirect(url_for("create_account_email_filters"))
-            
-    return render_template("CreateAccountEmailFilter.html")
+    try:
+        conn = connect_to_sql()
+        if not conn:
+            flash("Failed to connect to the database.", "danger")
+            return render_template("CreateAccountEmailFilter.html", accounts=[])
+
+        cursor = conn.cursor()
+        # Fetch account id and name from the accounts table
+        accounts_query = "SELECT id, name FROM accounts"
+        cursor.execute(accounts_query)
+        accounts = cursor.fetchall()  # Returns a list of tuples (id, name)
+        email_source_query = "SELECT id, name FROM email_source"
+        cursor.execute(email_source_query)
+        email_sources = cursor.fetchall()
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        flash(f"An error occurred while fetching accounts: {str(e)}", "danger")
+        accounts = []            
+        email_sources = []
+    return render_template("CreateAccountEmailFilter.html", accounts=accounts, email_sources=email_sources)
 
 @app.route("/updateaccountemailfilters/<string:account_email_filters_id>", methods=["GET", "POST"])
 @auth_required()
@@ -539,8 +584,16 @@ def update_account_email_filters(account_email_filters_id, **kwargs):
             """
             cursor.execute(query, (account_email_filters_id,))
             filter_data = cursor.fetchone()
-            if filter_data:
-                return render_template("UpdateAccountEmailFilter.html", email_filter=filter_data)
+            cursor1 = conn.cursor()
+            accounts_query = "SELECT id, name FROM accounts"
+            cursor1.execute(accounts_query)
+            accounts = cursor1.fetchall() 
+            email_source_query = "SELECT id, name FROM email_source"
+            cursor1.execute(email_source_query)
+            email_sources = cursor1.fetchall()
+            cursor1.close()
+            if filter_data and accounts and email_sources:
+                return render_template("UpdateAccountEmailFilter.html", email_filter=filter_data, accounts=accounts, email_sources=email_sources)
 
         elif request.method == "POST":
             rule = request.form['filterRule']
@@ -692,8 +745,21 @@ def create_email_parser_regex(**kwargs):
             flash(f"Failed to create Email Parser Regex. Error: {str(e)}", "danger")
         
         return redirect(url_for("create_email_parser_regex"))
-
-    return render_template("CreateEmailParserRegex.html")
+    try:
+        conn = connect_to_sql()
+        if not conn:
+            flash("Failed to connect to the database.", "danger")
+            return render_template("CreateEmailParserRegex.html", accounts=[])
+        cursor = conn.cursor()
+        email_parser_query = "SELECT id, parsing_name FROM email_parser"
+        cursor.execute(email_parser_query)
+        email_parsers = cursor.fetchall()
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        flash(f"An error occurred while fetching accounts: {str(e)}", "danger")        
+        email_parsers = []
+    return render_template("CreateEmailParserRegex.html", email_parsers=email_parsers)
 
 @app.route("/updateemailparserregex/<string:email_parser_regex_id>", methods=["GET", "POST"])
 @allowed_user_type(['admin'])
@@ -712,8 +778,13 @@ def update_email_parser_regex(email_parser_regex_id, **kwargs):
             """
             cursor.execute(query, (email_parser_regex_id,))
             email_source = cursor.fetchone()
-            if email_source:
-                return render_template("UpdateEmailParserRegex.html", regex=email_source)
+            cursor1 = conn.cursor()
+            email_parser_query = "SELECT id, parsing_name FROM email_parser"
+            cursor1.execute(email_parser_query)
+            email_parsers = cursor1.fetchall()
+            cursor1.close()
+            if email_source and email_parsers:
+                return render_template("UpdateEmailParserRegex.html", regex=email_source, email_parsers=email_parsers)
             else:
                 flash("Email source not found.", "danger")
                 return redirect(url_for('email_parser_regex'))
@@ -778,8 +849,21 @@ def create_email_parser(**kwargs):
             flash(f"Failed to create Email Parser. Error: {str(e)}", "danger")
         
         return redirect(url_for("create_email_parser"))
-
-    return render_template("CreateEmailParser.html")
+    try:
+        conn = connect_to_sql()
+        if not conn:
+            flash("Failed to connect to the database.", "danger")
+            return render_template("CreateEmailParser.html", accounts=[])
+        cursor = conn.cursor()
+        email_source_query = "SELECT id, name FROM email_source"
+        cursor.execute(email_source_query)
+        email_sources = cursor.fetchall()
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        flash(f"An error occurred while fetching accounts: {str(e)}", "danger")        
+        email_sources = []
+    return render_template("CreateEmailParser.html", email_sources = email_sources)
 
 @app.route("/updateemailparser/<string:email_parser_id>", methods=["GET", "POST"])
 @allowed_user_type(['admin'])
@@ -798,8 +882,13 @@ def update_email_parser(email_parser_id, **kwargs):
             """
             cursor.execute(query, (email_parser_id,))
             email_source = cursor.fetchone()
-            if email_source:
-                return render_template("UpdateEmailParser.html", parser=email_source)
+            cursor1 = conn.cursor()
+            email_source_query = "SELECT id, name FROM email_source"
+            cursor1.execute(email_source_query)
+            email_sources = cursor1.fetchall()
+            cursor1.close()
+            if email_source and email_sources:
+                return render_template("UpdateEmailParser.html", parser=email_source, email_sources=email_sources)
             else:
                 flash("Email source not found.", "danger")
                 return redirect(url_for('email_parser'))

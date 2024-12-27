@@ -11,12 +11,16 @@
             <div class="row g-3">
 
                 <!-- Email Parser ID Field -->
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="emailParserId" name="emailParserId" value="{{ regex.email_parser_id }}" required>
-                        <label for="emailParserId" class="required-field">Email Parser ID</label>
+                        <select class="form-select" id="emailParserId" name="emailParserId" required>
+                            {% for account in email_parsers %}
+                                <option value="{{ account[0] }}" {% if regex.email_parser_id == account[0] %}selected{% endif %}>{{ account[1] }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="emailParserId" class="required-field">Email Parser</label>
                         <div class="invalid-feedback">
-                            Please enter a valid email parser ID.
+                            Please select a valid Email Parser.
                         </div>
                     </div>
                 </div>
@@ -66,12 +70,15 @@
                 </div>
 
                 <!-- Status Field -->
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="regexStatus" name="regexStatus" value="{{ regex.status }}" required pattern="[01]">
+                        <select class="form-select" id="regexStatus" name="regexStatus" required>
+                            <option value="1" {{ 'selected' if regex.status == '1' }}>Active</option>
+                            <option value="0" {{ 'selected' if regex.status == '0' }}>Inactive</option>
+                        </select>
                         <label for="regexStatus" class="required-field">Status</label>
                         <div class="invalid-feedback">
-                            Please enter 0 or 1 for status.
+                            Please select a status.
                         </div>
                     </div>
                 </div>

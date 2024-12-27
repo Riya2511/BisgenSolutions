@@ -15,7 +15,7 @@
                 <div class="col-md-6">
                     <div class="form-floating">
                         <input type="text" class="form-control" id="filterRule" name="filterRule" value="{{ email_filter.rule }}" placeholder="Rule" required>
-                        <label for="filterRule" class="required-field">Rule</label>
+                        <label for="filterRule" class="required-field">Rule Name</label>
                         <div class="invalid-feedback">Please enter a valid rule.</div>
                     </div>
                 </div>
@@ -50,18 +50,31 @@
                 <!-- Account ID Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="accountId" name="accountId" value="{{ email_filter.account_id }}" placeholder="Account ID" required>
-                        <label for="accountId" class="required-field">Account ID</label>
-                        <div class="invalid-feedback">Please enter a valid Account ID.</div>
+                        <select class="form-select" id="accountId" name="accountId" required>
+                            <option value="">Select Account</option>
+                            {% for account in accounts %}
+                                <option value="{{ account[0] }}" {% if email_filter.account_id == account[0] %}selected{% endif %}>{{ account[1] }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="accountId" class="required-field">Account</label>
+                        <div class="invalid-feedback">
+                            Please select a valid Account.
+                        </div>
                     </div>
                 </div>
 
-                <!-- Email Parser ID Field -->
+                <!-- Email Source ID Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="emailSourceId" name="emailSourceId" value="{{ email_filter.email_source_id }}" placeholder="Email Source ID" required>
-                        <label for="emailSourceId" class="required-field">Email Source ID</label>
-                        <div class="invalid-feedback">Please enter a valid Email Source ID.</div>
+                        <select class="form-select" id="emailSourceId" name="emailSourceId" required>
+                            {% for account in email_sources %}
+                                <option value="{{ account[0] }}" {% if email_filter.email_source_id == account[0] %}selected{% endif %}>{{ account[1] }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="emailSourceId" class="required-field">Email Source</label>
+                        <div class="invalid-feedback">
+                            Please select a valid Email Source.
+                        </div>
                     </div>
                 </div>
 
@@ -77,10 +90,14 @@
                 <!-- Status Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="filterStatus" name="filterStatus" value="{{ email_filter.status }}" placeholder="Status" required pattern="[01]">
+                        <select class="form-select" id="filterStatus" name="filterStatus" required>
+                            <option value="1" {{ 'selected' if email_filter.status == '1' }}>Active</option>
+                            <option value="0" {{ 'selected' if email_filter.status == '0' }}>Inactive</option>
+                        </select>
                         <label for="filterStatus" class="required-field">Status</label>
-                        <div class="invalid-feedback">Please enter 0 or 1 for status.</div>
-                        <div class="helper-text">Enter 1 for active, 0 for inactive</div>
+                        <div class="invalid-feedback">
+                            Please select a status.
+                        </div>
                     </div>
                 </div>
 

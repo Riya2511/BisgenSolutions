@@ -22,25 +22,31 @@
                 </div>
 
                 <!-- Email Source ID Field -->
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="emailSourceId" name="emailSourceId" placeholder="Email Source ID" required>
-                        <label for="emailSourceId" class="required-field">Email Source ID</label>
+                        <select class="form-select" id="emailSourceId" name="emailSourceId" required>
+                            {% for account in email_sources %}
+                                <option value="{{ account[0] }}">{{ account[1] }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="emailSourceId" class="required-field">Email Source</label>
                         <div class="invalid-feedback">
-                            Please enter a valid email source ID.
+                            Please select a valid email source.
                         </div>
                     </div>
-                </div>
+                </div>  
 
                 <!-- Status Field -->
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="parserStatus" name="parserStatus" placeholder="Status" required pattern="[01]">
+                        <select class="form-select" id="parserStatus" name="parserStatus" required>
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
                         <label for="parserStatus" class="required-field">Status</label>
                         <div class="invalid-feedback">
-                            Please enter 0 or 1 for status.
+                            Please select a status.
                         </div>
-                        <div class="helper-text">Enter 1 for active, 0 for inactive</div>
                     </div>
                 </div>
 

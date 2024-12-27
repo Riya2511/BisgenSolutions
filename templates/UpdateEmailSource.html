@@ -23,17 +23,19 @@
                 </div>
 
                 <!-- Status Field -->
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="sourceStatus" name="sourceStatus" placeholder="Status" 
-                               value="{{ email_source.status }}" required pattern="[01]">
+                        <select class="form-select" id="sourceStatus" name="sourceStatus" required>
+                            <option value="1" {{ 'selected' if email_source.status == '1' }}>Active</option>
+                            <option value="0" {{ 'selected' if email_source.status == '0' }}>Inactive</option>
+                        </select>
                         <label for="sourceStatus" class="required-field">Status</label>
                         <div class="invalid-feedback">
-                            Please enter 0 or 1 for status.
+                            Please select a status.
                         </div>
-                        <div class="helper-text">Enter 1 for active, 0 for inactive</div>
                     </div>
                 </div>
+                
 
                 <!-- Submit Button -->
                 <div class="col-12 mt-4">

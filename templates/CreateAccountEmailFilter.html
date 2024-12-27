@@ -15,7 +15,7 @@
                 <div class="col-md-6">
                     <div class="form-floating">
                         <input type="text" class="form-control" id="filterRule" name="filterRule" placeholder="Rule" required>
-                        <label for="filterRule" class="required-field">Rule</label>
+                        <label for="filterRule" class="required-field">Rule Name</label>
                         <div class="invalid-feedback">
                             Please enter a valid rule.
                         </div>
@@ -58,30 +58,37 @@
                 <!-- Account ID Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="accountId" name="accountId" placeholder="Account ID" required>
-                        <label for="accountId" class="required-field">Account ID</label>
+                        <select class="form-select" id="accountId" name="accountId" required>
+                            {% for account in accounts %}
+                                <option value="{{ account[0] }}">{{ account[1] }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="accountId" class="required-field">Account</label>
                         <div class="invalid-feedback">
-                            Please enter a valid Account ID.
+                            Please select a valid Account.
                         </div>
                     </div>
-                </div>
+                </div>  
 
-                <!-- Email Parser ID Field -->
+                <!-- Email Source ID Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="emailSourceId" name="emailSourceId" placeholder="Email Source ID" required>
-                        <label for="emailSourceId" class="required-field">Email Source ID</label>
+                        <select class="form-select" id="emailSourceId" name="emailSourceId" required>
+                            {% for account in email_sources %}
+                                <option value="{{ account[0] }}">{{ account[1] }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="emailSourceId" class="required-field">Email Source</label>
                         <div class="invalid-feedback">
-                            Please enter a valid Email Source ID.
+                            Please select a valid email source.
                         </div>
                     </div>
-                </div>
+                </div>  
 
                 <!-- Status Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
                         <select class="form-select" id="filterStatus" name="filterStatus" required>
-                            <option value="">Select status</option>
                             <option value="1">Active</option>
                             <option value="0">Inactive</option>
                         </select>

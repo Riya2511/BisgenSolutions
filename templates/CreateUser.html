@@ -13,14 +13,18 @@
                 <!-- Account ID Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="accountId" name="accountId" placeholder="Account ID" required>
-                        <label for="accountId" class="required-field">Account ID</label>
+                        <select class="form-select" id="accountId" name="accountId" required>
+                            {% for account in accounts %}
+                                <option value="{{ account[0] }}">{{ account[1] }}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="accountId" class="required-field">Account</label>
                         <div class="invalid-feedback">
-                            Please enter a valid Account ID.
+                            Please select a valid Account.
                         </div>
                     </div>
-                </div>
-
+                </div>             
+                
                 <!-- Name Field -->
                 <div class="col-md-12">
                     <div class="form-floating">
@@ -68,24 +72,28 @@
                 <!-- User Type Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="userType" name="userType" placeholder="User Type" required>
+                        <select class="form-select" id="userType" name="userType" required>
+                            <option value="admin">Admin</option>
+                            <option value="user">User</option>
+                        </select>
                         <label for="userType" class="required-field">User Type</label>
                         <div class="invalid-feedback">
-                            Please enter user type.
+                            Please select a user type.
                         </div>
-                        <div class="helper-text">Enter type (e.g., admin, user)</div>
                     </div>
                 </div>
 
                 <!-- Status Field -->
                 <div class="col-md-6">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="userStatus" name="userStatus" placeholder="Status" required pattern="[01]">
+                        <select class="form-select" id="userStatus" name="userStatus" required>
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
                         <label for="userStatus" class="required-field">Status</label>
-                        <div class="invalid-feedback">
-                            Please enter 0 or 1 for status.
+                        <div class="invalid-feedback"> 
+                            Please select a status.
                         </div>
-                        <div class="helper-text">Enter 1 for active, 0 for inactive</div>
                     </div>
                 </div>
 
