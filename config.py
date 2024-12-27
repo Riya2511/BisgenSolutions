@@ -7,6 +7,7 @@ SQL_CONFIG = {
 }
 
 BATCH_SIZE = 50  # Number of emails to fetch in each batch
+FETCH_SINCE_DATE = "15-10-2024"
 CRON_INTERVAL_IN_SECONDS_SCHEDULER1 = 5  # Interval in seconds
 CRON_DURATION_IN_MINUTES_SCHEDULER1 =  30
 

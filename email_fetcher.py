@@ -3,8 +3,55 @@ import email
 from email.header import decode_header
 import json
 from datetime import datetime
+from config import BATCH_SIZE, FETCH_SINCE_DATE
 from helper import connect_to_sql, get_full_body_content, convert_to_sql_date
 
+def auto_create_email_fetch_queue():
+    conn = connect_to_sql()
+    if not conn:
+        print("Failed to connect to the database.")
+        return
+
+    cursor = conn.cursor(dictionary=True)
+    try:
+        # Fetch all account_email_filters IDs not in email_fetch_queue.rule_id
+        query = """
+            SELECT aef.id AS rule_id, aef.account_id
+            FROM account_email_filters aef
+            LEFT JOIN email_fetch_queue efq ON aef.id = efq.rule_id
+            WHERE efq.rule_id IS NULL
+        """
+        cursor.execute(query)
+        filters_to_add = cursor.fetchall()
+
+        if not filters_to_add:
+            print("No new rules to add to email_fetch_queue.")
+            return
+
+        # Prepare data for insertion
+        since_date = datetime.strptime(FETCH_SINCE_DATE, "%d-%m-%Y").date()
+        batch_size = BATCH_SIZE
+        status = 'pending'
+
+        insert_query = """
+            INSERT INTO email_fetch_queue (account_id, rule_id, since_date, batch_size, status)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        for filter_row in filters_to_add:
+            cursor.execute(
+                insert_query,
+                (filter_row["account_id"], filter_row["rule_id"], since_date, batch_size, status)
+            )
+
+        conn.commit()
+        print(f"Added {len(filters_to_add)} entries to email_fetch_queue.")
+
+    except Exception as e:
+        print(f"Error: {e}")
+
+    finally:
+        cursor.close()
+        conn.close()
 
 def fetch_emails_by_rule(rule_id, since_date, batch_size):
     conn = connect_to_sql()
@@ -77,63 +124,60 @@ def fetch_emails_by_rule(rule_id, since_date, batch_size):
         conn.close()
 
 def process_email_fetch_jobs():
+    auto_create_email_fetch_queue()
     conn = connect_to_sql()
     if not conn:
         print("Database connection failed.")
         return
     
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM email_fetch_queue WHERE status = 'pending' OR status = 'in_progress' LIMIT 1")
-    job = cursor.fetchone()
-    if not job:
+    cursor.execute("SELECT * FROM email_fetch_queue WHERE status = 'pending' OR status = 'in_progress'")
+    jobs = cursor.fetchall()
+    if not jobs:
         print("No pending or in-progress jobs found.")
         return
 
-    try:
-        # Update job status to in_progress if it's pending
-        if job['status'] == 'pending':
-            cursor.execute("UPDATE email_fetch_queue SET status = 'in_progress' WHERE id = %s", (job['id'],))
+    for job in jobs:
+        try:
+            since_date = job['last_fetched_date'] or job['since_date']
+            if isinstance(since_date, str):
+                since_date = datetime.strptime(since_date, "%Y-%m-%d").date()
+            elif isinstance(since_date, datetime):
+                since_date = since_date.date()
+
+            batch_size = job['batch_size']
+
+            emails, is_final_batch = fetch_emails_by_rule(job['rule_id'], since_date, batch_size)
+            filtered_emails = []
+            for email in emails:
+                email_date = datetime.strptime(email["imap_created_date"], "%Y-%m-%d %H:%M:%S").date()
+                if email_date > since_date:
+                    filtered_emails.append(email)
+
+            if filtered_emails:
+                store_emails_in_db(filtered_emails)
+                last_email = filtered_emails[-1]
+                cursor.execute("""
+                    UPDATE email_fetch_queue
+                    SET fetched_count = fetched_count + %s,
+                        last_fetched_date = %s,
+                        last_fetched_id = %s,
+                        status = "in_progress"
+                    WHERE id = %s
+                """, (len(filtered_emails), last_email["imap_created_date"], last_email["imap_message_id"], job['id']))
+                conn.commit()
+
+                print(f"Batch processed successfully for job ID {job['id']}.")
+            else:
+                print(f"No new emails found beyond the last fetched date for job ID {job['id']}.")
+
+        except Exception as e:
+            print(f"Error processing job ID {job['id']}: {e}")
+            cursor.execute("UPDATE email_fetch_queue SET status = 'failed' WHERE id = %s", (job['id'],))
             conn.commit()
 
-        # Use `last_fetched_date` if available, otherwise use `since_date`
-        since_date = job['last_fetched_date'] or job['since_date']
-        
-        # Ensure `since_date` is compatible with IMAP's SINCE format (date only)
-        if isinstance(since_date, datetime):
-            since_date = since_date.date()  # Extract just the date part if it's a datetime
-
-        batch_size = job['batch_size']
-        # Fetch one batch of emails and check if there are more
-        emails, is_final_batch = fetch_emails_by_rule(job['rule_id'], since_date, batch_size)
-        if emails:
-            store_emails_in_db(emails)
-            
-            # Update progress for the batch
-            last_email = emails[-1]
-            cursor.execute("""
-                UPDATE email_fetch_queue
-                SET fetched_count = fetched_count + %s,
-                    last_fetched_date = %s,
-                    last_fetched_id = %s
-                WHERE id = %s
-            """, (len(emails), last_email["imap_created_date"], last_email["imap_message_id"], job['id']))
-            conn.commit()
-
-        # Only mark as completed if this was the final batch
-        if is_final_batch:
-            cursor.execute("UPDATE email_fetch_queue SET status = 'completed' WHERE id = %s", (job['id'],))
-            conn.commit()
-            print("Job completed successfully")
-        else:
-            print("Batch processed successfully, more emails remaining")
-
-    except Exception as e:
-        print("Error processing job:", e)
-        cursor.execute("UPDATE email_fetch_queue SET status = 'failed' WHERE id = %s", (job['id'],))
-        conn.commit()
-    finally:
-        cursor.close()
-        conn.close()
+    cursor.close()
+    conn.close()
 
 def process_emails(mail, email_ids, subject_filters, body_filters, rule_id, account_id):
     emails = []

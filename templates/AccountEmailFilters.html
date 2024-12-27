@@ -22,7 +22,7 @@
                             <th>Filters On From</th>
                             <th>Filters On Body</th>
                             <th>Account_id</th>
-                            <th>Email Parser Id</th>
+                            <th>Email Source Id</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -35,7 +35,7 @@
                                 <td>{{ lead.filters_on_from }}</td>
                                 <td>{{ lead.filters_on_body }}</td>
                                 <td>{{ lead.account_id }}</td>
-                                <td>{{ lead.email_parser_id }}</td>
+                                <td>{{ lead.email_source_id }}</td>
                                 <td><a href="{{ url_for('update_account_email_filters', account_email_filters_id=lead.id) }}" class="email-id"><i class="fas fa-edit me-1"></i>Update</a></td>
                             </tr>
                         {% endfor %}

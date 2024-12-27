@@ -1,7 +1,7 @@
 import logging
 import re
 from typing import Dict, List, Tuple
-
+import json
 from config import EMAIL_PROCESS_BATCH_SIZE
 from helper import connect_to_sql
 
@@ -11,6 +11,75 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+def fill_email_parser_id(filter_id):
+    conn = connect_to_sql()
+    if not conn:
+        logger.error("Database connection failed.")
+        return
+
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        filter_query = """
+        SELECT filters_on_subject, email_source_id 
+        FROM account_email_filters
+        WHERE id = %s
+        """
+        cursor.execute(filter_query, (filter_id,))
+        filter_record = cursor.fetchone()
+        if not filter_record:
+            logger.error(f"No record found for filter ID {filter_id}.")
+            return
+
+        filters_on_subject = filter_record["filters_on_subject"]
+        email_source_id = filter_record["email_source_id"]
+        if not filters_on_subject or not email_source_id:
+            logger.info("Filters on subject or email source ID is empty. Skipping.")
+            return
+
+        # Extract words from filters_on_subject and normalize to lowercase
+        filters_on_subject = json.loads(filters_on_subject)
+        subject_words = set()
+        for string in filters_on_subject:
+            subject_words.update(re.findall(r"\b\w+\b", string.lower()))
+
+        print(subject_words)
+        parser_query = """
+        SELECT id, parsing_name
+        FROM email_parser
+        WHERE email_source_id = %s
+        """
+        cursor.execute(parser_query, (email_source_id,))
+        parsers = cursor.fetchall()
+
+        if not parsers:
+            logger.info(f"No parsers found for email source ID {email_source_id}.")
+            return
+
+        for parser in parsers:
+            # Extract words from parsing_name and normalize to lowercase
+            parsing_name_words = set(re.findall(r"\w+", parser["parsing_name"].lower()))
+            
+            # Case-insensitive comparison
+            if subject_words.issubset(parsing_name_words):
+                update_query = """
+                UPDATE account_email_filters
+                SET email_parser_id = %s
+                WHERE id = %s
+                """
+                cursor.execute(update_query, (parser["id"], filter_id))
+                conn.commit()
+                logger.info(f"Updated email_parser_id to {parser['id']} for filter ID {filter_id}.")
+                return
+
+        logger.info(f"No matching parser found for filter ID {filter_id}.")
+
+    except Exception as e:
+        logger.error(f"Error processing filter ID {filter_id}: {str(e)}")
+
+    finally:
+        cursor.close()
+        conn.close()
 
 def extract_name(text):
     match = re.search(r"Name:\s*([^\r\n]+)", text, re.IGNORECASE)
@@ -134,7 +203,6 @@ def parse_location_instant(text):
         return product_name, location.strip().replace("&ensp;", " ")
     return None, None
 
-
 def fetch_emails_to_process(batch_size: int) -> List[Dict]:
     """
     Fetch emails that need processing, with regex patterns fetched separately
@@ -142,10 +210,23 @@ def fetch_emails_to_process(batch_size: int) -> List[Dict]:
     conn = connect_to_sql()
     if not conn:
         return []
-
     cursor = conn.cursor(dictionary=True)
+    filters_query = """
+        SELECT DISTINCT 
+            id 
+        FROM 
+            account_email_filters 
+        WHERE 
+            email_parser_id IS NULL
+    """
+    cursor.execute(filters_query)
+    filters_to_fill = cursor.fetchall()
 
-    # First get the emails
+    if filters_to_fill:
+        filter_ids = [row['id'] for row in filters_to_fill]
+        for i in filter_ids:
+            fill_email_parser_id(i)  
+
     email_query = """
         SELECT DISTINCT
             e.id, 
@@ -161,8 +242,7 @@ def fetch_emails_to_process(batch_size: int) -> List[Dict]:
     """
     cursor.execute(email_query, (batch_size,))
     emails = cursor.fetchall()
-
-    # Then get regex patterns and column mappings for each email
+    
     for email in emails:
         pattern_query = """
             SELECT email_regex, rule_id, email_column_mapped
@@ -173,8 +253,11 @@ def fetch_emails_to_process(batch_size: int) -> List[Dict]:
                 WHERE id = %s
             )
         """
+        
         cursor.execute(pattern_query, (email["id"],))
         patterns = cursor.fetchall()
+        if not patterns:
+            continue
 
         email["regex_patterns"] = [p["email_regex"] for p in patterns]
         email["rule_ids"] = [p["rule_id"] for p in patterns]
@@ -185,10 +268,7 @@ def fetch_emails_to_process(batch_size: int) -> List[Dict]:
 
     return emails
 
-
-def process_email_regex(
-    email_id: int, imap_body: str, regex_patterns: List[str], column_mappings: List[str]
-) -> List[List[Tuple]]:
+def process_email_regex(email_id: int, imap_body: str, regex_patterns: List[str], column_mappings: List[str]) -> List[List[Tuple]]:
     all_results = []
 
     for pattern, column_mapping in zip(regex_patterns, column_mappings):
@@ -291,9 +371,7 @@ def process_email_regex(
     return all_results
 
 
-def update_email_regex_results(
-    email_id: int, regex_results: List[Tuple], account_id: int
-):
+def update_email_regex_results(email_id: int, regex_results: List[Tuple], account_id: int):
     """
     Update the email and leads tables with results from multiple regex patterns
     """
@@ -362,8 +440,10 @@ def update_email_regex_results(
         print(lead_updates)
 
         lead_query = "SELECT id FROM leads WHERE email = %s"
-        cursor.execute(lead_query, (lead_updates["email"],))
-        lead_result = cursor.fetchone()
+        lead_result = None
+        if "email" in lead_updates:
+            cursor.execute(lead_query, (lead_updates["email"],))
+            lead_result = cursor.fetchone()
 
         overall_status = "PARSING_DONE"
         if not any(output for _, _, output, _ in regex_results):
@@ -445,7 +525,7 @@ def main():
     # while True:
     emails = fetch_emails_to_process(batch_size)
 
-    if not emails:
+    if not emails: 
         logger.info("No more emails to process.")
         # break
 

@@ -477,7 +477,7 @@ def create_account_email_filters(**kwargs):
                 'filters_on_from': request.form.get('filtersOnFrom', ''),
                 'filters_on_body': request.form.get('filtersOnBody', ''),
                 'account_id': request.form.get('accountId', ''),
-                'email_parser_id': request.form.get('emailParserId', ''),
+                'email_source_id': request.form.get('emailSourceId', ''),
                 'status': request.form.get('filterStatus', '')
             }
             if not all(form_data.values()):
@@ -492,7 +492,7 @@ def create_account_email_filters(**kwargs):
             query = """
             INSERT INTO account_email_filters 
             (rule, filters_on_subject, filters_on_from, filters_on_body, 
-             account_id, email_parser_id, status)
+             account_id, email_source_id, status)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
             """
             
@@ -502,7 +502,7 @@ def create_account_email_filters(**kwargs):
                 form_data['filters_on_from'],
                 form_data['filters_on_body'],
                 form_data['account_id'],
-                form_data['email_parser_id'],
+                form_data['email_source_id'],
                 form_data['status']
             ))
             
@@ -533,7 +533,7 @@ def update_account_email_filters(account_email_filters_id, **kwargs):
         
         if request.method == "GET":
             query = """
-            SELECT rule, filters_on_subject, filters_on_from, filters_on_body, account_id, email_parser_id, email_key_colums, status
+            SELECT rule, filters_on_subject, filters_on_from, filters_on_body, account_id, email_source_id, email_key_colums, status
             FROM account_email_filters
             WHERE id = %s
             """
@@ -548,17 +548,17 @@ def update_account_email_filters(account_email_filters_id, **kwargs):
             filters_on_from = request.form['filtersOnFrom']
             filters_on_body = request.form['filtersOnBody']
             account_id = request.form['accountId']
-            email_parser_id = request.form['emailParserId']
+            email_source_id = request.form['emailSourceId']
             email_key_columns = request.form['emailKeyColumn']
             status = request.form['filterStatus']
 
             update_query = """
             UPDATE account_email_filters
             SET rule = %s, filters_on_subject = %s, filters_on_from = %s, filters_on_body = %s, account_id = %s, 
-                email_parser_id = %s, email_key_colums = %s, status = %s
+                email_source_id = %s, email_key_colums = %s, status = %s
             WHERE id = %s
             """
-            cursor.execute(update_query, (rule, filters_on_subject, filters_on_from, filters_on_body, account_id, email_parser_id, email_key_columns, status, account_email_filters_id))
+            cursor.execute(update_query, (rule, filters_on_subject, filters_on_from, filters_on_body, account_id, email_source_id, email_key_columns, status, account_email_filters_id))
             conn.commit()
 
             flash("Email filter updated successfully.", "success")
@@ -828,49 +828,49 @@ def update_email_parser(email_parser_id, **kwargs):
         cursor.close()
         conn.close()
 
-@app.route("/createemailfetchqueue", methods=["GET", "POST"])
-@allowed_user_type(['admin'])
-def create_email_fetch_queue(**kwargs):
-    conn = connect_to_sql()
-    if not conn:
-        flash("Failed to connect to the database.")
-        return render_template("index.html", accounts=[], rules=[])
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT id, name FROM accounts where status = 1")
-    accounts = cursor.fetchall()
-    cursor.execute("SELECT id, rule FROM account_email_filters where status = 1")
-    rules = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    if request.method == "POST":
-        account_id = request.form.get("account")
-        rule_id = request.form.get("rule")
-        since_date = request.form.get("since_date")
-        if not account_id or not rule_id:
-            flash("Please select both account and rule.")
-            return redirect(url_for("create_email_fetch_queue"))
-        try:
-            since_date = datetime.datetime.strptime(since_date, "%Y-%m-%d").date()
-        except ValueError:
-            flash("Invalid date format. Please use YYYY-MM-DD.")
-            return redirect(url_for("create_email_fetch_queue"))
-        conn = connect_to_sql()
-        if not conn:
-            return
-        try:
-            cursor = conn.cursor()
-            query = """
-                INSERT INTO email_fetch_queue (account_id, rule_id, since_date, batch_size, status)
-                VALUES (%s, %s, %s, %s, 'pending')
-            """
-            cursor.execute(query, (account_id, rule_id, since_date, BATCH_SIZE))
-            conn.commit()
-        finally:
-            cursor.close()
-            conn.close()
-        flash("Job added to fetch emails. They will be processed shortly.")
-        return redirect('/createemailfetchqueue')
-    return render_template("CreateEmailFetchQueue.html", accounts=accounts, rules=rules)
+# @app.route("/createemailfetchqueue", methods=["GET", "POST"])
+# @allowed_user_type(['admin'])
+# def create_email_fetch_queue(**kwargs):
+#     conn = connect_to_sql()
+#     if not conn:
+#         flash("Failed to connect to the database.")
+#         return render_template("index.html", accounts=[], rules=[])
+#     cursor = conn.cursor(dictionary=True)
+#     cursor.execute("SELECT id, name FROM accounts where status = 1")
+#     accounts = cursor.fetchall()
+#     cursor.execute("SELECT id, rule FROM account_email_filters where status = 1")
+#     rules = cursor.fetchall()
+#     cursor.close()
+#     conn.close()
+#     if request.method == "POST":
+#         account_id = request.form.get("account")
+#         rule_id = request.form.get("rule")
+#         since_date = request.form.get("since_date")
+#         if not account_id or not rule_id:
+#             flash("Please select both account and rule.")
+#             return redirect(url_for("create_email_fetch_queue"))
+#         try:
+#             since_date = datetime.datetime.strptime(since_date, "%Y-%m-%d").date()
+#         except ValueError:
+#             flash("Invalid date format. Please use YYYY-MM-DD.")
+#             return redirect(url_for("create_email_fetch_queue"))
+#         conn = connect_to_sql()
+#         if not conn:
+#             return
+#         try:
+#             cursor = conn.cursor()
+#             query = """
+#                 INSERT INTO email_fetch_queue (account_id, rule_id, since_date, batch_size, status)
+#                 VALUES (%s, %s, %s, %s, 'pending')
+#             """
+#             cursor.execute(query, (account_id, rule_id, since_date, BATCH_SIZE))
+#             conn.commit()
+#         finally:
+#             cursor.close()
+#             conn.close()
+#         flash("Job added to fetch emails. They will be processed shortly.")
+#         return redirect('/createemailfetchqueue')
+#     return render_template("CreateEmailFetchQueue.html", accounts=accounts, rules=rules)
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
