@@ -11,7 +11,8 @@ class AuthToken() :
 
     def encode(self, user: dict, expires_in=8766): 
         payload = user.copy()
-        tokenExpiryTime = datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours = expires_in)
+        # tokenExpiryTime = datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours = expires_in)
+        tokenExpiryTime = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=expires_in)
         payload['exp'] = tokenExpiryTime
         authToken = jwt.encode(payload, self.secretKey, algorithm=self.algorithm)
         return authToken, tokenExpiryTime
